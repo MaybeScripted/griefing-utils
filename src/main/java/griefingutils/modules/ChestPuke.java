@@ -5,6 +5,7 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
@@ -74,8 +75,7 @@ public class ChestPuke extends BetterModule {
             if (!(be instanceof ChestBlockEntity cbe)) continue;
             if (pukedChests.contains(be.getPos())) continue;
 
-            double squaredDistance = mc.player.getEyePos().squaredDistanceTo(be.getPos().toCenterPos());
-            if (squaredDistance > 16 /* 4*4 */) continue;
+            if (!PlayerUtils.isWithinReach(cbe.getPos())) continue;
 
             mc.interactionManager.interactBlock(
                 mc.player,

@@ -66,6 +66,7 @@ public class AutoLavacast extends BetterModule {
         .name("enable-place-teleport")
         .description("Teleports you to the block placed by Enable Place.")
         .defaultValue(true)
+        .visible(enablePlace::get)
         .build()
     );
 
