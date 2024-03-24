@@ -6,15 +6,16 @@ import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
+import meteordevelopment.meteorclient.utils.player.SlotUtils;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.DoubleBlockProperties;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.*;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -23,9 +24,19 @@ import net.minecraft.util.math.Direction;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.CompletableFuture;
 
-public class ChestPuke extends BetterModule {
+public class ContainerPuke extends BetterModule {
+    private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
+
+    private final Setting<Boolean> throwAtFeet = sgGeneral.add(new BoolSetting.Builder()
+        .name("throw-at-feet")
+        .description("Throws the items from the container at your feet")
+        .defaultValue(true)
+        .build()
+    );
+
 
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
         .name("render")
@@ -60,8 +71,8 @@ public class ChestPuke extends BetterModule {
 
     public Deque<BlockPos> pukedChests = new ArrayDeque<>();
 
-    public ChestPuke() {
-        super(Categories.DEFAULT, "chest-puke", "Pukes the content of nearby chests");
+    public ContainerPuke() {
+        super(Categories.DEFAULT, "container-puke", "Pukes the content of nearby containers");
     }
 
     @Override
@@ -71,11 +82,20 @@ public class ChestPuke extends BetterModule {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
+        if (mc.player.isSneaking() || mc.player.currentScreenHandler != mc.player.playerScreenHandler || isSpectator()) return;
         for(BlockEntity be : Utils.blockEntities()) {
-            if (!(be instanceof ChestBlockEntity cbe)) continue;
+            Block block = mc.world.getBlockState(be.getPos()).getBlock();
+            if (!(block instanceof ChestBlock ||
+                block instanceof ShulkerBoxBlock ||
+                block instanceof BarrelBlock ||
+                block instanceof HopperBlock ||
+                block instanceof DispenserBlock ||
+                block instanceof FurnaceBlock
+            )) continue;
+
             if (pukedChests.contains(be.getPos())) continue;
 
-            if (!PlayerUtils.isWithinReach(cbe.getPos())) continue;
+            if (!PlayerUtils.isWithinReach(be.getPos())) continue;
 
             mc.interactionManager.interactBlock(
                 mc.player,
@@ -88,13 +108,16 @@ public class ChestPuke extends BetterModule {
                 )
             );
 
-            if (mc.world.getBlockState(be.getPos()).getBlock() instanceof ChestBlock cb) {
+            if (block instanceof ChestBlock cb) {
                 cb.getBlockEntitySource(
                     mc.world.getBlockState(be.getPos()),
                     mc.world,
                     be.getPos(),
                     false
                 ).apply(new ChestHandler());
+            } else {
+                pukedChests.add(be.getPos());
+                renderPos(be.getPos());
             }
 
             break;
@@ -103,17 +126,17 @@ public class ChestPuke extends BetterModule {
 
     @EventHandler
     private void onInventory(InventoryEvent event) {
-        if (!(mc.player.currentScreenHandler instanceof GenericContainerScreenHandler handler)) return;
-        sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, mc.player.isOnGround()));
+        ScreenHandler handler = mc.player.currentScreenHandler;
+        if (throwAtFeet.get())
+            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, mc.player.isOnGround()));
 
-        int size = handler.getRows() * 9;
+        int size = SlotUtils.indexToId(SlotUtils.MAIN_START);
+
         for (int i = 0; i < size; i++) {
-            // https://wiki.vg/Protocol#Click_Container
-            // SlotActionType.THROW = Mode 4
-            // button 1 = Control + Drop key (Q)
-            if (handler.getInventory().getStack(i).isEmpty()) continue;
+            if (!handler.getSlot(i).hasStack()) continue;
             mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
         }
+
         mc.player.closeHandledScreen();
     }
 

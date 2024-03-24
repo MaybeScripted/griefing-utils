@@ -43,6 +43,10 @@ public interface MCUtil {
         return MC.player.isCreative();
     }
 
+    default boolean isSpectator() {
+        return MC.player.isSpectator();
+    }
+
     default boolean hasOp() {
         return MC.player.hasPermissionLevel(4);
     }

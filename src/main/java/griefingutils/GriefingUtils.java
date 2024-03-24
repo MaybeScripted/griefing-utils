@@ -31,7 +31,7 @@ public class GriefingUtils extends MeteorAddon {
         Modules.get().add(new AutoLavacast());
         Modules.get().add(new AutoScoreboard());
         Modules.get().add(new AutoSignPlus());
-        Modules.get().add(new ChestPuke());
+        Modules.get().add(new ContainerPuke());
         Modules.get().add(new DoomBoom());
         Modules.get().add(new ExplosiveHands());
         Modules.get().add(new GameModeNotifier());
