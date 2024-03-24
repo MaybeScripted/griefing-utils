@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "griefingutils",
+  "version": "1.0.0",
+  "name": "0x06's Griefing Utils",
+  "description": "Utilities for griefing servers in block game",
+  "authors": ["0x06", "DuckGuy"],
+  "icon": "assets/griefing_utils/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "griefingutils.GriefingUtils"
+    ]
+  },
+  "mixins": ["griefingutils.mixins.json"],
+  "custom": {
+    "meteor-client:color": "255,75,0"
+  },
+  "accessWidener": "griefingutils.accesswidener",
+  "depends": {
+    "java": ">=17",
+    "minecraft": ">=${mc_version}",
+    "meteor-client": "*"
+  }
+}
