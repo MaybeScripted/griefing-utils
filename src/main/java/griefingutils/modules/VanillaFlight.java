@@ -55,31 +55,25 @@ public class VanillaFlight extends BetterModule {
         return true;
     }
 
-    private Vec3d newVelocity = Vec3d.ZERO;
-
-    @Override
-    public void onActivate() {
-        newVelocity = Vec3d.ZERO;
-    }
-
     @EventHandler
-    private void onTick(TickEvent.Post event) {
-        newVelocity = Vec3d.ZERO;
-        double speedMul = mc.player.isSprinting() ? 1 : sprintMultiplier.get();
-        Vec3d vel = PlayerUtils.getHorizontalVelocity(speed.get() * speedMul - 0.001);
-        double vely = 0;
-        double t = mc.world.getTime();
-        if (mc.options.jumpKey.isPressed()) vely += (vertSpeed.get() + 0.001) * speedMul / 20;
-        if (mc.options.sneakKey.isPressed()) vely -= (vertSpeed.get() + 0.001) * speedMul / 20;
-        if (t % 10 == 0) if (canMoveHorizontally(-0.1)) {
+    private void postTick(TickEvent.Post event) {
+        // packet anti kick
+        if (mc.world.getTime() % 10 == 0) if (canMoveHorizontally(-0.1)) {
             sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.1, mc.player.getZ(), false));
             ((ClientPlayerEntityAccessor) mc.player).setTicksSinceLastPositionPacketSent(19);
         }
-        newVelocity = vel.add(0, vely, 0);
     }
 
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
+        double speedMul = mc.player.isSprinting() ? 1 : sprintMultiplier.get();
+
+        double velY = 0;
+        if (mc.options.jumpKey.isPressed()) velY += (vertSpeed.get() + 0.001) * speedMul / 20;
+        if (mc.options.sneakKey.isPressed()) velY -= (vertSpeed.get() + 0.001) * speedMul / 20;
+
+        Vec3d vel = PlayerUtils.getHorizontalVelocity(speed.get() * speedMul - 0.001);
+        Vec3d newVelocity = vel.add(0, velY, 0);
         ((IVec3d)mc.player.getVelocity()).set(newVelocity.x, newVelocity.y, newVelocity.z);
     }
 }
