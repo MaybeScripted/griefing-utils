@@ -71,8 +71,8 @@ public class VanillaFlight extends BetterModule {
         double t = mc.world.getTime();
         if (mc.options.jumpKey.isPressed()) vely += (vertSpeed.get() + 0.001) * speedMul / 20;
         if (mc.options.sneakKey.isPressed()) vely -= (vertSpeed.get() + 0.001) * speedMul / 20;
-        if (t % 20 == 0) if (canMoveHorizontally(-0.035)) {
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.035, mc.player.getZ(), false));
+        if (t % 10 == 0) if (canMoveHorizontally(-0.1)) {
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.1, mc.player.getZ(), false));
             ((ClientPlayerEntityAccessor) mc.player).setTicksSinceLastPositionPacketSent(19);
         }
         newVelocity = vel.add(0, vely, 0);

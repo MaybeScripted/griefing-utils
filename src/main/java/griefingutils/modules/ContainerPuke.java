@@ -13,6 +13,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.screen.*;
@@ -70,6 +71,7 @@ public class ContainerPuke extends BetterModule {
     );
 
     public Deque<BlockPos> pukedChests = new ArrayDeque<>();
+    public int count = 0;
 
     public ContainerPuke() {
         super(Categories.DEFAULT, "container-puke", "Pukes the content of nearby containers");
@@ -80,9 +82,17 @@ public class ContainerPuke extends BetterModule {
         pukedChests.clear();
     }
 
+    @Override
+    public String getInfoString() {
+        return Integer.toString(count);
+    }
+
+    private boolean isPuking = false;
+
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.player.isSneaking() || mc.player.currentScreenHandler != mc.player.playerScreenHandler || isSpectator()) return;
+        ClientPlayerEntity p = mc.player;
+        if (p.isSneaking() || p.currentScreenHandler != p.playerScreenHandler || isPuking || isSpectator()) return;
         for(BlockEntity be : Utils.blockEntities()) {
             Block block = mc.world.getBlockState(be.getPos()).getBlock();
             if (!(block instanceof ChestBlock ||
@@ -90,7 +100,10 @@ public class ContainerPuke extends BetterModule {
                 block instanceof BarrelBlock ||
                 block instanceof HopperBlock ||
                 block instanceof DispenserBlock ||
-                block instanceof FurnaceBlock
+                block instanceof FurnaceBlock ||
+                block instanceof BlastFurnaceBlock ||
+                block instanceof SmokerBlock ||
+                block instanceof BrewingStandBlock
             )) continue;
 
             if (pukedChests.contains(be.getPos())) continue;
@@ -107,6 +120,7 @@ public class ContainerPuke extends BetterModule {
                     false
                 )
             );
+            isPuking = true;
 
             if (block instanceof ChestBlock cb) {
                 cb.getBlockEntitySource(
@@ -117,6 +131,7 @@ public class ContainerPuke extends BetterModule {
                 ).apply(new ChestHandler());
             } else {
                 pukedChests.add(be.getPos());
+                count++;
                 renderPos(be.getPos());
             }
 
@@ -138,6 +153,7 @@ public class ContainerPuke extends BetterModule {
         }
 
         mc.player.closeHandledScreen();
+        isPuking = false;
     }
 
     private void renderPos(BlockPos pos) {
@@ -158,8 +174,9 @@ public class ContainerPuke extends BetterModule {
         @Override
         public Void getFromBoth(ChestBlockEntity first, ChestBlockEntity second) {
             pukedChests.add(first.getPos());
-            renderPos(first.getPos());
             pukedChests.add(second.getPos());
+            count += 2;
+            renderPos(first.getPos());
             renderPos(second.getPos());
             return null;
         }
@@ -167,6 +184,7 @@ public class ContainerPuke extends BetterModule {
         @Override
         public Void getFrom(ChestBlockEntity single) {
             pukedChests.add(single.getPos());
+            count++;
             renderPos(single.getPos());
             return null;
         }
