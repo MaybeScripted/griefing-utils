@@ -79,7 +79,7 @@ public class DoomBoom extends BetterModule{
             if (creeper.get()) nbt = "{EntityTag:{id:\"minecraft:creeper\",Pos:[" + x + "," + y + "," + z + "],Fuse:0,ignited:1b,Health:4206969f,ExplosionRadius:" + strength.get() + "b}}";
             else nbt = "{EntityTag:{id:\"minecraft:tnt\",Pos:[" + x + "," + y + "," + z + "],fuse:0}}";
             CreativeUtils.giveItemWithNbtToSelectedSlot(Items.STRIDER_SPAWN_EGG, nbt, null, 1);
-            BlockHitResult bhr = new BlockHitResult(mc.player.getPos().add(0, 1, 0), Direction.UP, new BlockPos(mc.player.getBlockPos().add(0, 1, 0)), false);
+            BlockHitResult bhr = bhrAbovePlayer();
             mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
         }
         mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);

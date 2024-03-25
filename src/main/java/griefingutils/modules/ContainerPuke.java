@@ -6,15 +6,16 @@ import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
+import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.meteorclient.utils.player.SlotUtils;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.meteorclient.utils.world.Dir;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.SlotActionType;
@@ -22,27 +23,45 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
+import org.lwjgl.system.MathUtil;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 public class ContainerPuke extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    private final Setting<Boolean> throwAtFeet = sgGeneral.add(new BoolSetting.Builder()
-        .name("throw-at-feet")
-        .description("Throws the items from the container at your feet")
-        .defaultValue(true)
+    private final Setting<ThrowDirection> throwDirection = sgGeneral.add(new EnumSetting.Builder<ThrowDirection>()
+        .name("throw-direction")
+        .description("Lets you change the direction you puke the items at.")
+        .defaultValue(ThrowDirection.DOWNWARDS)
         .build()
     );
-
 
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
         .name("render")
         .description("Whether to render things.")
         .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<Boolean> renderUnopenedContainers = sgRender.add(new BoolSetting.Builder()
+        .name("render-unopened-containers")
+        .description("Wheter to render unopened containers.")
+        .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<Integer> renderRange = sgRender.add(new IntSetting.Builder()
+        .name("render-range")
+        .description("Render range for unopened containers.")
+        .range(8, 128)
+        .sliderRange(8, 128)
+        .defaultValue(32)
         .build()
     );
 
@@ -80,6 +99,7 @@ public class ContainerPuke extends BetterModule {
     @Override
     public void onDeactivate() {
         pukedChests.clear();
+        count = 0;
     }
 
     @Override
@@ -94,7 +114,8 @@ public class ContainerPuke extends BetterModule {
         ClientPlayerEntity p = mc.player;
         if (p.isSneaking() || p.currentScreenHandler != p.playerScreenHandler || isPuking || isSpectator()) return;
         for(BlockEntity be : Utils.blockEntities()) {
-            Block block = mc.world.getBlockState(be.getPos()).getBlock();
+            BlockState blockState = mc.world.getBlockState(be.getPos());
+            Block block = blockState.getBlock();
             if (!(block instanceof ChestBlock ||
                 block instanceof ShulkerBoxBlock ||
                 block instanceof BarrelBlock ||
@@ -108,43 +129,39 @@ public class ContainerPuke extends BetterModule {
 
             if (pukedChests.contains(be.getPos())) continue;
 
+            if (renderUnopenedContainers.get()) {
+                int rangeSquared = renderRange.get() * renderRange.get();
+                if (mc.player.getEyePos().squaredDistanceTo(be.getPos().toCenterPos()) < rangeSquared)
+                    renderPos(be.getPos(), 1, false, false);
+            }
+
+            if (isPuking) continue;
+
             if (!PlayerUtils.isWithinReach(be.getPos())) continue;
 
-            mc.interactionManager.interactBlock(
-                mc.player,
-                Hand.MAIN_HAND,
-                new BlockHitResult(
-                    be.getPos().toCenterPos().offset(Direction.DOWN, 0.5),
-                    Direction.DOWN,
-                    be.getPos(),
-                    false
-                )
-            );
+            BlockHitResult bhr = new BlockHitResult(be.getPos().toCenterPos().offset(Direction.DOWN, 0.5), Direction.DOWN, be.getPos(), false);
+            mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
             isPuking = true;
 
             if (block instanceof ChestBlock cb) {
-                cb.getBlockEntitySource(
-                    mc.world.getBlockState(be.getPos()),
-                    mc.world,
-                    be.getPos(),
-                    false
-                ).apply(new ChestHandler());
+                cb.getBlockEntitySource(blockState, mc.world, be.getPos(), true).apply(new ChestHandler());
             } else {
                 pukedChests.add(be.getPos());
                 count++;
                 renderPos(be.getPos());
             }
-
-            break;
         }
     }
 
     @EventHandler
     private void onInventory(InventoryEvent event) {
-        ScreenHandler handler = mc.player.currentScreenHandler;
-        if (throwAtFeet.get())
-            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, mc.player.isOnGround()));
+        Vec2f rot = throwDirection.get().getThrowAngle(mc.player);
+        sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(rot.x, rot.y, mc.player.isOnGround()));
+        afterRotate();
+    }
 
+    private void afterRotate() {
+        ScreenHandler handler = mc.player.currentScreenHandler;
         int size = SlotUtils.indexToId(SlotUtils.MAIN_START);
 
         for (int i = 0; i < size; i++) {
@@ -154,20 +171,6 @@ public class ContainerPuke extends BetterModule {
 
         mc.player.closeHandledScreen();
         isPuking = false;
-    }
-
-    private void renderPos(BlockPos pos) {
-        if (!render.get()) return;
-        RenderUtils.renderTickingBlock(
-            pos.toImmutable(),
-            sideColor.get(),
-            lineColor.get(),
-            shapeMode.get(),
-            0,
-            10,
-            true,
-            false
-        );
     }
 
     private class ChestHandler implements DoubleBlockProperties.PropertyRetriever<ChestBlockEntity, Void> {
@@ -180,7 +183,6 @@ public class ContainerPuke extends BetterModule {
             renderPos(second.getPos());
             return null;
         }
-
         @Override
         public Void getFrom(ChestBlockEntity single) {
             pukedChests.add(single.getPos());
@@ -192,6 +194,37 @@ public class ContainerPuke extends BetterModule {
         @Override
         public Void getFallback() {
             return null;
+        }
+
+    }
+
+    private void renderPos(BlockPos pos) {
+        renderPos(pos, 10, true, false);
+    }
+
+    private void renderPos(BlockPos pos, int duration, boolean fade, boolean shrink) {
+        if (!render.get()) return;
+        RenderUtils.renderTickingBlock(
+            pos.toImmutable(), sideColor.get(), lineColor.get(), shapeMode.get(), 0, duration, fade, shrink
+        );
+    }
+
+    private enum ThrowDirection {
+        FORWARDS(Vec2f::new),
+        DOWNWARDS((yaw, pitch) -> new Vec2f(yaw, 90)),
+        UPWARDS((yaw, pitch) -> new Vec2f(yaw, -90)),
+        BACKWARDS((yaw, pitch) -> new Vec2f(MathHelper.wrapDegrees(yaw + 180), -30));
+
+        private final BiFunction<Float, Float, Vec2f> rotationGetter;
+
+        ThrowDirection(BiFunction<Float, Float, Vec2f> rotationGetter) {
+            this.rotationGetter = rotationGetter;
+        }
+
+        Vec2f getThrowAngle(ClientPlayerEntity player) {
+            float yaw = player.getYaw();
+            float pitch = player.getPitch();
+            return rotationGetter.apply(yaw, pitch);
         }
     }
 }

@@ -47,6 +47,7 @@ public class ExplosiveHands extends BetterModule {
             toggle();
             return;
         }
+
         if (!mc.options.attackKey.isPressed() || mc.currentScreen != null) return;
         HitResult hitResult = mc.cameraEntity.raycast(900, 0, false);
         if (hitResult.getType() == HitResult.Type.MISS) return;
@@ -54,9 +55,13 @@ public class ExplosiveHands extends BetterModule {
         String nbt = entity.get().asEggNBT(p.offset(Direction.DOWN, 1), strength.get());
         ItemStack lastStack = mc.player.getMainHandStack();
 
-        // Using horse egg because of the version (ViaFabric compatibility)
-        CreativeUtils.giveItemWithNbtToSelectedSlot(Items.HORSE_SPAWN_EGG, nbt, null, 1);
-        BlockHitResult bhr = new BlockHitResult(mc.player.getPos().add(0, 1, 0), Direction.UP, new BlockPos(mc.player.getBlockPos().add(0, 1, 0)), false);
+        CreativeUtils.giveItemWithNbtToSelectedSlot(Items.MOOSHROOM_SPAWN_EGG, nbt, null, 1);
+        BlockHitResult bhr = new BlockHitResult(
+            mc.player.getPos().add(0, 1, 0),
+            Direction.UP,
+            new BlockPos(mc.player.getBlockPos().add(0, 1, 0)),
+            false
+        );
         mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
         mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
     }

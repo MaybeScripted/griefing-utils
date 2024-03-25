@@ -78,12 +78,7 @@ public class HologramCommand extends BetterCommand {
 
                 ItemStack lastStack = mc.player.getMainHandStack();
                 for (int y = 0; y < height; y++) {
-                    BlockHitResult bhr = new BlockHitResult(
-                        mc.player.getPos().add(0, 1, 0),
-                        Direction.UP,
-                        new BlockPos(mc.player.getBlockPos().add(0, 1, 0)),
-                        false
-                    );
+                    BlockHitResult bhr = bhrAbovePlayer();
                     ItemStack hologram = new ItemStack(Items.COD_SPAWN_EGG);
                     NbtCompound entityTag = new NbtCompound();
                     hologram.setSubNbt("EntityTag", entityTag);

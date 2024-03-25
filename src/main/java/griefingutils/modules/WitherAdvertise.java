@@ -75,19 +75,10 @@ public class WitherAdvertise extends BetterModule {
 
             String nbt = "{EntityTag:{id:\"minecraft:wither\",Pos:[" + x + "," + y + "," + z + "],Health:4206969f,CustomName:'{\"text\": \"" + name.get() + "\", \"color\": \"" + color.get() + "\"}'}}";
             CreativeUtils.giveItemWithNbtToSelectedSlot(Items.WITHER_SPAWN_EGG, nbt, null, 1);
-            BlockHitResult bhr = getBlockHitResult();
+            BlockHitResult bhr = bhrAbovePlayer();
             mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
         }
         mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
         toggle();
-    }
-
-    private BlockHitResult getBlockHitResult() {
-        return new BlockHitResult(
-            mc.player.getPos().add(0, 1, 0),
-            Direction.UP,
-            new BlockPos(mc.player.getBlockPos().add(0, 1, 0)),
-            false
-        );
     }
 }

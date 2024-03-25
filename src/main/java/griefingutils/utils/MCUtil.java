@@ -8,9 +8,14 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Range;
 
 import java.util.function.Consumer;
 
@@ -71,5 +76,18 @@ public interface MCUtil {
 
     default void swingMainHand() {
         MC.player.swingHand(Hand.MAIN_HAND);
+    }
+
+    default void sendCommand(String command) {
+        networkHandler().sendCommand(command);
+    }
+
+    default BlockHitResult bhrAbovePlayer() {
+        return new BlockHitResult(
+            MC.player.getPos().add(0, 1, 0),
+            Direction.UP,
+            new BlockPos(MC.player.getBlockPos().add(0, 1, 0)),
+            false
+        );
     }
 }

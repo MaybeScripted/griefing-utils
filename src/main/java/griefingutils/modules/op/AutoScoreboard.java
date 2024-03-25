@@ -15,7 +15,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
 
-// TODO code style
 public class AutoScoreboard extends BetterModule {
     private final SettingGroup sgTitle = settings.createGroup("Title Options");
     private final SettingGroup sgContent = settings.createGroup("Content Options");
@@ -59,15 +58,6 @@ public class AutoScoreboard extends BetterModule {
         super(Categories.DEFAULT, "auto-scoreboard", "Creates a scoreboard with some content");
     }
 
-    @Override
-    public void onActivate() {
-        assert mc.player != null;
-        if(!mc.player.hasPermissionLevel(2)) {
-            toggle();
-            error("No permission!");
-        }
-    }
-
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if(!hasOp()) {
@@ -75,37 +65,43 @@ public class AutoScoreboard extends BetterModule {
             toggle();
             return;
         }
+
         String scoreboardName = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-        String command = "/scoreboard objectives add " + scoreboardName + " dummy {\"text\":\"" + MeteorStarscript.run(MeteorStarscript.compile(title.get())) + "\",\"color\":\"" + titleColor.get() + "\"}";
-        if (command.length() <= 257) {
-            ChatUtils.sendPlayerMsg(command);
-        } else {
-            int characterstodelete = command.length() - 257;
-            error("Title is too long. Shorten it by " + characterstodelete + " characters.");
+        String parsedTitle = MeteorStarscript.run(MeteorStarscript.compile(title.get()));
+
+        String command = "scoreboard objectives add %s dummy {\"text\":\"%s\",\"color\":\"%s\"}"
+            .formatted(scoreboardName, parsedTitle, titleColor.get());
+
+        if (command.length() <= 256) sendCommand(command);
+        else {
+            error("Title is too long. Shorten it by %d characters.", command.length() - 256);
             toggle();
             return;
         }
-        ChatUtils.sendPlayerMsg("/scoreboard objectives setdisplay sidebar " + scoreboardName);
+
+        sendCommand("scoreboard objectives setdisplay sidebar " + scoreboardName);
+
         int i = content.get().size();
-        for (String string : content.get()) {
+        for (String content : content.get()) {
+            String parsedContent = MeteorStarscript.run(MeteorStarscript.compile(content));
             String randomName = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-            ChatUtils.sendPlayerMsg("/team add " + randomName);
-            String thecommand2 = "/team modify " + randomName + " suffix {\"text\":\" " + MeteorStarscript.run(MeteorStarscript.compile(string)) + "\"}";
-            if (thecommand2.length()<=257){
-                ChatUtils.sendPlayerMsg(thecommand2);
-            }
+            sendCommand("team add " + randomName);
+            String command2 = "team modify %s suffix {\"text\":\" %s\"}".formatted(randomName, parsedContent);
+            if (command2.length() <= 256) sendCommand(command2);
             else {
-                int characterstodelete = thecommand2.length()-257;
-                error("This content line is too long (" + MeteorStarscript.run(MeteorStarscript.compile(string))+"). Shorten it by " + characterstodelete + " characters.");
+                error(
+                    "This content line is too long (%s). Shorten it by %d characters.",
+                    parsedContent, command2.length() - 256
+                );
                 toggle();
                 return;
             }
-            ChatUtils.sendPlayerMsg("/team modify " + randomName + " color " + contentColor);
-            ChatUtils.sendPlayerMsg("/team join " + randomName + " " + i);
-            ChatUtils.sendPlayerMsg("/scoreboard players set " + i + " " + scoreboardName + " " + i);
+            sendCommand("team modify %s color %s".formatted(randomName, contentColor));
+            sendCommand("team join %s %d".formatted(randomName, i));
+            sendCommand("scoreboard players set %d %s %d".formatted(i, scoreboardName, i));
             i--;
         }
-        toggle();
         info("Created scoreboard.");
+        toggle();
     }
 }
