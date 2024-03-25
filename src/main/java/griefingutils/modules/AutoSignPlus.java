@@ -151,6 +151,7 @@ public class AutoSignPlus extends BetterModule {
         if (!editPlaced.get() && isCompleted(packet.getPos())) return;
         boolean isFront = !reinteract.remove(packet.getPos());
         sendEditSignPacket(packet.getPos(), isFront);
+        mc.player.closeHandledScreen();
         if (bothSides.get() && isFront) {
             interactWithSign(packet.getPos());
             reinteract.add(packet.getPos());

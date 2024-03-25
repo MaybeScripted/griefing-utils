@@ -4,10 +4,7 @@ import griefingutils.modules.BetterModule;
 import griefingutils.modules.Categories;
 import griefingutils.utils.CreativeUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.BoolSetting;
-import meteordevelopment.meteorclient.settings.IntSetting;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,10 +18,10 @@ import net.minecraft.util.math.Vec3d;
 public class ExplosiveHands extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<Boolean> creeper = sgGeneral.add(new BoolSetting.Builder()
-        .name("creeper")
-        .description("use creepers instead of tnts")
-        .defaultValue(true)
+    private final Setting<ExplosiveEntity> entity = sgGeneral.add(new EnumSetting.Builder<ExplosiveEntity>()
+        .name("entity")
+        .description("entity that explodes")
+        .defaultValue(ExplosiveEntity.CREEPER)
         .build()
     );
 
@@ -34,7 +31,7 @@ public class ExplosiveHands extends BetterModule {
         .defaultValue(10)
         .range(1, 127)
         .sliderRange(1, 127)
-        .visible(creeper::get)
+        .visible(() -> entity.get().hasRange)
         .build()
     );
 
@@ -54,13 +51,38 @@ public class ExplosiveHands extends BetterModule {
         HitResult hitResult = mc.cameraEntity.raycast(900, 0, false);
         if (hitResult.getType() == HitResult.Type.MISS) return;
         Vec3d p = hitResult.getPos();
-        String nbt;
-        if (creeper.get()) nbt = "{EntityTag:{id:\"minecraft:creeper\",Pos:[" + p.x + "," + (p.y - 1) + "," + p.z + "],Fuse:0,ignited:1b,Health:4206969f,ExplosionRadius:" + strength.get() + "b}}";
-        else nbt = "{EntityTag:{id:\"minecraft:tnt\",Pos:[" + p.x + "," + p.y + "," + p.z + "],fuse:0}}";
+        String nbt = entity.get().asEggNBT(p.offset(Direction.DOWN, 1), strength.get());
         ItemStack lastStack = mc.player.getMainHandStack();
-        CreativeUtils.giveItemWithNbtToSelectedSlot(Items.STRIDER_SPAWN_EGG, nbt, null, 1);
+
+        // Using horse egg because of the version (ViaFabric compatibility)
+        CreativeUtils.giveItemWithNbtToSelectedSlot(Items.HORSE_SPAWN_EGG, nbt, null, 1);
         BlockHitResult bhr = new BlockHitResult(mc.player.getPos().add(0, 1, 0), Direction.UP, new BlockPos(mc.player.getBlockPos().add(0, 1, 0)), false);
         mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
         mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
+    }
+
+    private enum ExplosiveEntity {
+        FIREBALL("minecraft:fireball", true, "power:[0.0, -10000.0, 0.0]", "ExplosionPower:%db"),
+        TNT("minecraft:tnt",false,"fuse:0"),
+        CREEPER("minecraft:creeper", true, "ignited:1b", "Health:4206969f", "Fuse:0", "ExplosionRadius:%db");
+
+        private final String entityId;
+        private final String extra;
+        public final boolean hasRange;
+
+        ExplosiveEntity(String entityId, boolean hasRange, String... extra) {
+            this.hasRange = hasRange;
+            this.extra = String.join(",", extra);
+            this.entityId = entityId;
+        }
+
+        public String asEggNBT(Vec3d to, int strength){
+            return "{EntityTag:{id:\"%s\",Pos:[%s],%s}}"
+                .formatted(
+                    entityId,
+                    to.toString().substring(1, to.toString().length()-1),
+                    hasRange ? extra.formatted(strength) : extra
+                );
+        }
     }
 }
