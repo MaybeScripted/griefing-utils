@@ -87,7 +87,9 @@ public class ContainerPuke extends BetterModule {
     );
 
     public Deque<BlockPos> pukedChests = new ArrayDeque<>();
+    private boolean isPuking = false;
     public int count = 0;
+
 
     public ContainerPuke() {
         super(Categories.DEFAULT, "container-puke", "Pukes the content of nearby containers");
@@ -96,6 +98,7 @@ public class ContainerPuke extends BetterModule {
     @Override
     public void onDeactivate() {
         pukedChests.clear();
+        isPuking = false;
         count = 0;
     }
 
@@ -103,8 +106,6 @@ public class ContainerPuke extends BetterModule {
     public String getInfoString() {
         return Integer.toString(count);
     }
-
-    private boolean isPuking = false;
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
