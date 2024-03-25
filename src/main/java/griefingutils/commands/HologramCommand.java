@@ -121,7 +121,7 @@ public class HologramCommand extends BetterCommand {
             }
 
         });
-        return SINGLE_SUCCESS;
+        return SUCCESS;
     }
 
     public static BufferedImage scaleImage(BufferedImage image, int imageType, int width, int height) {

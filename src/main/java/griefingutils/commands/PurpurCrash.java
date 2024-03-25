@@ -7,8 +7,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
-
 public class PurpurCrash extends BetterCommand {
     public PurpurCrash() {
         super("purpur-crash", "Sends funny CustomPayloadC2S packets to the server");
@@ -35,6 +33,6 @@ public class PurpurCrash extends BetterCommand {
                 }, new Identifier("purpur", "beehive_c2s")
             ));
         }
-        return SINGLE_SUCCESS;
+        return SUCCESS;
     }
 }

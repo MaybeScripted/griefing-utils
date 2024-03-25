@@ -10,8 +10,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
-
 public class ClipboardGive extends BetterCommand {
     public ClipboardGive() {
         super("clipboardgive", "Gives an item from a copied give command", "clipgive", "giveclip");
@@ -27,7 +25,7 @@ public class ClipboardGive extends BetterCommand {
             String clipboard = mc.keyboard.getClipboard();
             if (!clipboard.startsWith("/give")) {
                 ChatUtils.warning("Clipboard content is not a give command");
-                return SINGLE_SUCCESS;
+                return SUCCESS;
             }
             String command = clipboard.substring(clipboard.indexOf(" ", 6) + 1);
             Item item = getItem(command);
@@ -37,10 +35,10 @@ public class ClipboardGive extends BetterCommand {
 
             CreativeUtils.giveItemWithNbtToEmptySlot(item, nbt, null, count);
 
-            return SINGLE_SUCCESS;
+            return SUCCESS;
         } catch (Exception e) {
             ChatUtils.warning("Give command is malformed");
-            return SINGLE_SUCCESS;
+            return SUCCESS;
         }
     }
 
