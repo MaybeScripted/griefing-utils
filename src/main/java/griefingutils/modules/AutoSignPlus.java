@@ -4,6 +4,7 @@ import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.BlockUpdateEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.meteorclient.utils.world.BlockEntityIterator;
 import meteordevelopment.orbit.EventHandler;
@@ -129,10 +130,7 @@ public class AutoSignPlus extends BetterModule {
         if (mc.player == null || mc.world == null || !editPlaced.get()) return;
         if (mc.world.getTime() % (delay.get() + 1) > 0) return;
 
-        BlockEntityIterator iterator = new BlockEntityIterator();
-
-        while (iterator.hasNext()) {
-            BlockEntity blockEntity = iterator.next();
+        for (BlockEntity blockEntity : Utils.blockEntities()) {
             if (!(blockEntity instanceof SignBlockEntity sign) || sign.isWaxed()) continue;
             if (isTheSame(sign)) continue;
             if (reinteract.contains(blockEntity.getPos())) continue;
@@ -145,14 +143,6 @@ public class AutoSignPlus extends BetterModule {
 
     private boolean isCompleted(BlockPos pos) {
         return interacted.contains(pos) && !reinteract.contains(pos);
-    }
-
-    @EventHandler
-    public void onBlockUpdate(BlockUpdateEvent event) {
-        if (!isCompleted(event.pos)) return;
-        if (!event.oldState.isIn(BlockTags.ALL_SIGNS)) return;
-        if (event.newState.isOf(event.oldState.getBlock()) && isTheSame(mc.world.getBlockEntity(event.pos))) return;
-        interacted.remove(event.pos);
     }
 
     @EventHandler(priority = HIGHEST + 10)
