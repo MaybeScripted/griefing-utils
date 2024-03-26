@@ -157,7 +157,7 @@ public class AutoLavacast extends BetterModule {
         List<BlockPos> blockPoses = getBlockPoses(fastMode.get() ? blocksPerTick.get() : 1, goingDown);
 
         for (BlockPos pos: blockPoses)
-            renderPos(pos, 1, false, false);
+            renderPos(pos, 1, false);
 
         if (!mc.player.input.jumping) return;
 
@@ -212,7 +212,7 @@ public class AutoLavacast extends BetterModule {
         if (BlockUtils.place(bp, item, false, -1, renderSwing.get(), true, false)) {
             // Render block if was placed
             if (render.get())
-                renderPos(bp.toImmutable(), 8, true, false);
+                renderPos(bp.toImmutable(), 8, true);
             return true;
         }
         return false;
@@ -230,7 +230,7 @@ public class AutoLavacast extends BetterModule {
         return !(block instanceof FallingBlock) || !FallingBlock.canFallThrough(mc.world.getBlockState(pos));
     }
 
-    private void renderPos(BlockPos pos, int duration, boolean fade, boolean shrink) {
-        RenderUtils.renderTickingBlock(pos.toImmutable(), sideColor.get(), lineColor.get(), shapeMode.get(), 0, duration, fade, shrink);
+    private void renderPos(BlockPos pos, int duration, boolean fade) {
+        RenderUtils.renderTickingBlock(pos.toImmutable(), sideColor.get(), lineColor.get(), shapeMode.get(), 0, duration, fade, false);
     }
 }

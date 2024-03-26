@@ -26,6 +26,7 @@ public class Privacy extends BetterModule {
         if (hideIPs.get()) s = censorIPs(s);
         return s;
     }
+
     // Modified version of first comment from https://stackoverflow.com/q/31178400
     private final Pattern IPv4Pattern = Pattern.compile("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(2[0-4][0-9]|25[0-5]|1[0-9]{2}|[1-9][0-9]|[0-9])");
     public String censorIPs(String s) {

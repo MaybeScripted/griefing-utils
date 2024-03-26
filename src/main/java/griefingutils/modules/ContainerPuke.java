@@ -138,6 +138,7 @@ public class ContainerPuke extends BetterModule {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
+        if (!Utils.canUpdate()) return;
         ClientPlayerEntity p = mc.player;
         if (p.isSneaking() || p.currentScreenHandler != p.playerScreenHandler || isPuking || isSpectator()) return;
         for(BlockEntity be : Utils.blockEntities()) {
