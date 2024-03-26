@@ -32,7 +32,7 @@ public abstract class GameMenuScreenMixin extends Screen {
     @Unique private static final Text MORE_TEXT = Text.translatable("createWorld.tab.more.title");
 
     @Redirect(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;", ordinal = 2))
-    private Widget initWidgets(GridWidget.Adder instance, Widget sendFeedbackBtn) {
+    private Widget replaceSendFeedbackBtn(GridWidget.Adder instance, Widget sendFeedbackBtn) {
         if (Modules.get().isActive(BetterPauseScreen.class)) {
             ButtonWidget buttonWidget = createButton(MORE_TEXT, () -> new GameMenuExtrasScreen((GameMenuScreen) (Object) this));
             if (GriefingUtils.MC.isInSingleplayer()) {

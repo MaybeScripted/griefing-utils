@@ -32,6 +32,7 @@ public class CrackedKick extends BetterCommand {
     }
 
     private int kick(@Nullable PlayerListEntry entry) {
+        if (mc.isIntegratedServerRunning()) warning("Not available in singleplayer!");
         InetSocketAddress address = (InetSocketAddress) networkHandler().getConnection().getAddress();
         if (entry == null) {
             info("Kicking everyone");

@@ -14,6 +14,8 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
@@ -26,6 +28,7 @@ import net.minecraft.util.math.Vec2f;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import java.util.function.BiFunction;
 
 public class ContainerPuke extends BetterModule {
@@ -36,6 +39,32 @@ public class ContainerPuke extends BetterModule {
         .name("throw-direction")
         .description("Lets you change the direction you puke the items at.")
         .defaultValue(ThrowDirection.DOWNWARDS)
+        .build()
+    );
+
+    private final Setting<Boolean> filter = sgGeneral.add(new BoolSetting.Builder()
+        .name("filter")
+        .description("Whether to filter the items you puke.")
+        .defaultValue(false)
+        .build()
+    );
+
+    private final Setting<List<Item>> items = sgGeneral.add(new ItemListSetting.Builder()
+        .name("filter-items")
+        .description("The items to filter.")
+        .visible(filter::get)
+        .defaultValue(List.of(
+            Items.LAVA_BUCKET,
+            Items.WATER_BUCKET,
+            Items.BUCKET,
+            Items.SAND,
+            Items.GUNPOWDER,
+            Items.TNT,
+            Items.FLINT_AND_STEEL,
+            Items.FLINT,
+            Items.IRON_INGOT,
+            Items.FIRE_CHARGE
+        ))
         .build()
     );
 
@@ -164,6 +193,7 @@ public class ContainerPuke extends BetterModule {
 
         for (int i = 0; i < size; i++) {
             if (!handler.getSlot(i).hasStack()) continue;
+            if (filter.get() && !items.get().contains(handler.getSlot(i).getStack().getItem())) continue;
             mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
         }
 

@@ -11,8 +11,6 @@ import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
@@ -23,8 +21,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
-
-import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 
 public class HologramCommand extends BetterCommand {
     private String lastImagePath = null;
@@ -43,9 +39,13 @@ public class HologramCommand extends BetterCommand {
     }
 
     private int execute(boolean last) {
+        if (!isCreative()) {
+            warning("You're not in creative mode!");
+            return SUCCESS;
+        }
         if (last && lastImagePath == null) {
             ChatUtils.warning("There is no last image!");
-            return SINGLE_SUCCESS;
+            return SUCCESS;
         }
         PointerBuffer filter;
         if(!last) filter = BufferUtils.createPointerBuffer(1)

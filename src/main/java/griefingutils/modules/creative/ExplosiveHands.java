@@ -43,7 +43,7 @@ public class ExplosiveHands extends BetterModule {
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if (!isCreative()) {
-            warning("You don't have creative");
+            warning("You're not in creative mode!");
             toggle();
             return;
         }
