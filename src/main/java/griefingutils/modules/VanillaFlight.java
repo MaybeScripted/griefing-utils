@@ -34,9 +34,9 @@ public class VanillaFlight extends BetterModule {
         .build()
     );
 
-    private final Setting<Double> sprintMultiplier = sgGeneral.add(new DoubleSetting.Builder()
-        .name("sprint-multiplier")
-        .description("It's applied to your speed when you're not sprinting.")
+    private final Setting<Double> normalSpeedMultiplier = sgGeneral.add(new DoubleSetting.Builder()
+        .name("normal-speed-multiplier")
+        .description("The multiplier of your speed when you're not sprinting.")
         .defaultValue(0.75)
         .range(0, 1)
         .sliderRange(0, 1)
@@ -44,7 +44,7 @@ public class VanillaFlight extends BetterModule {
     );
 
     public VanillaFlight() {
-        super(Categories.DEFAULT, "vanilla-flight", "A Redbull szááárnyakat ad!");
+        super(Categories.DEFAULT, "vanilla-flight", "Flight with smart packet-based anti-kick.");
     }
 
     // don't clip into blocks
@@ -66,7 +66,7 @@ public class VanillaFlight extends BetterModule {
 
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
-        double speedMul = mc.player.isSprinting() ? 1 : sprintMultiplier.get();
+        double speedMul = mc.player.isSprinting() ? 1 : normalSpeedMultiplier.get();
 
         double velY = 0;
         if (mc.options.jumpKey.isPressed()) velY += (vertSpeed.get() + 0.001) * speedMul / 20;

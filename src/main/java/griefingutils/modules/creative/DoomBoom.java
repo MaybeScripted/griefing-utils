@@ -56,7 +56,7 @@ public class DoomBoom extends BetterModule{
     );
 
     public DoomBoom() {
-        super(Categories.DEFAULT, "doom-boom", "Obliterates nearby terrain");
+        super(Categories.DEFAULT, "doom-boom", "Obliterates nearby terrain. (requires creative mode)");
     }
 
     // TODO code style

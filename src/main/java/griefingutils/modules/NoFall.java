@@ -6,7 +6,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class NoFall extends BetterModule {
     public NoFall() {
-        super(Categories.DEFAULT, "better-no-fall", "Universal No-Fall (works on almost any anti-cheat).");
+        super(Categories.DEFAULT, "better-no-fall", "Universal No-Fall (works with almost any anti-cheat).");
     }
 
     @EventHandler

@@ -8,7 +8,7 @@ import net.minecraft.world.GameMode;
 
 public class GameModeNotifier extends BetterModule {
     public GameModeNotifier() {
-        super(Categories.DEFAULT, "Gamemode Notifier", "Alerts you when someone changes their gamemode");
+        super(Categories.DEFAULT, "Gamemode Notifier", "Alerts you when someone changes their gamemode.");
     }
 
     @EventHandler

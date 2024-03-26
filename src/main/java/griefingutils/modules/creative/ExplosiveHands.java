@@ -36,7 +36,7 @@ public class ExplosiveHands extends BetterModule {
     );
 
     public ExplosiveHands() {
-        super(Categories.DEFAULT, "explosive-hands", "Makes your hands explosive (requires creative mode)");
+        super(Categories.DEFAULT, "explosive-hands", "Makes your hands explosive. (requires creative mode)");
     }
 
     // TODO code style

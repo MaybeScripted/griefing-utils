@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 
 public class CrackedKick extends BetterCommand {
     public CrackedKick() {
-        super("cracked-kick", "kicks players on cracked servers", "ckick");
+        super("cracked-kick", "Kicks players on cracked servers.", "ckick");
     }
 
     @Override

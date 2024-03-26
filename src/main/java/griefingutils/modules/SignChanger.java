@@ -123,7 +123,7 @@ public class SignChanger extends BetterModule {
     private boolean isFront = true;
 
     public SignChanger() {
-        super(Categories.DEFAULT, "sign-changer", "Changes nearby signs to your text");
+        super(Categories.DEFAULT, "sign-changer", "Changes nearby signs to your text.");
     }
 
     @Override

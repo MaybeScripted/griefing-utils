@@ -20,7 +20,7 @@ public class AntiFunny extends BetterModule {
     );
 
     public AntiFunny() {
-        super(Categories.DEFAULT, "anti-funny", "Cancels funny packets that may freeze your game");
+        super(Categories.DEFAULT, "anti-funny", "Cancels funny packets that may freeze your game.");
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

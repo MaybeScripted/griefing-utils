@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class PurpurCrash extends BetterCommand {
     public PurpurCrash() {
-        super("purpur-crash", "Sends funny CustomPayloadC2S packets to the server");
+        super("purpur-crash", "Sends funny CustomPayloadC2S packets to the server.");
     }
 
     @Override

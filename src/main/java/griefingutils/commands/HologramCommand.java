@@ -26,7 +26,7 @@ public class HologramCommand extends BetterCommand {
     private String lastImagePath = null;
 
     public HologramCommand() {
-        super("hologram", "Place holograms (in creative mode)", "holo");
+        super("hologram", "Loads an image into the world. (requires creative mode)", "holo");
     }
 
     @Override

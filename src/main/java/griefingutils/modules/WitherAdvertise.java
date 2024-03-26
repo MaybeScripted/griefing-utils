@@ -20,21 +20,21 @@ public class WitherAdvertise extends BetterModule {
 
     private final Setting<String> name = sgGeneral.add(new StringSetting.Builder()
         .name("name")
-        .description("of the withers")
-        .defaultValue("Griefed by 0x06")
+        .description("Their names.")
+        .defaultValue("")
         .build()
     );
 
     private final Setting<String> color = sgGeneral.add(new StringSetting.Builder()
         .name("color")
-        .description("of the name")
+        .description("The color of their names.")
         .defaultValue("#FF0000")
         .build()
     );
 
     private final Setting<Integer> amount = sgGeneral.add(new IntSetting.Builder()
         .name("amount")
-        .description("of withers")
+        .description("The amount of withers you want to spawn.")
         .defaultValue(1)
         .range(1, 100)
         .sliderRange(1, 100)
@@ -43,7 +43,7 @@ public class WitherAdvertise extends BetterModule {
 
     private final Setting<Integer> range = sgGeneral.add(new IntSetting.Builder()
         .name("range")
-        .description("the range")
+        .description("How far away to spawn the withers.")
         .defaultValue(100)
         .range(1, 200)
         .sliderRange(1, 200)
@@ -51,7 +51,7 @@ public class WitherAdvertise extends BetterModule {
     );
 
     public WitherAdvertise() {
-        super(Categories.DEFAULT, "wither-advertise", "spawns withers nearby with a name");
+        super(Categories.DEFAULT, "wither-advertise", "Spawns withers nearby with a name.");
     }
 
     // TODO code style

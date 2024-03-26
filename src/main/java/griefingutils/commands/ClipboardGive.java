@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ClipboardGive extends BetterCommand {
     public ClipboardGive() {
-        super("clipboardgive", "Gives an item from a copied give command", "clipgive", "giveclip");
+        super("clipboard-give", "Gives an item from a copied give command.", "clip-give", "cgive", "give-clip");
     }
 
     @Override

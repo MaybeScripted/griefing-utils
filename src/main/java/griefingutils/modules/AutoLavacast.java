@@ -130,13 +130,13 @@ public class AutoLavacast extends BetterModule {
 
     private final Setting<Boolean> dontLerp = sgRender.add(new BoolSetting.Builder()
         .name("don't-lerp")
-        .description("Disable the lerping that smoothes your position")
+        .description("Disable the lerping that smoothes your position.")
         .defaultValue(true)
         .build()
     );
 
     public AutoLavacast() {
-        super(Categories.DEFAULT, "auto-lavacast", "Lava casting made easy");
+        super(Categories.DEFAULT, "auto-lavacast", "Lava casting made easy.");
     }
 
     @Override
