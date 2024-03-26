@@ -7,7 +7,7 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PrivacyMode extends BetterModule {
+public class Privacy extends BetterModule {
     public SettingGroup sgGeneral = settings.getDefaultGroup();
 
     public final Setting<Boolean> hideIPs = sgGeneral.add(new BoolSetting.Builder()
@@ -17,8 +17,8 @@ public class PrivacyMode extends BetterModule {
         .build()
     );
 
-    public PrivacyMode() {
-        super(Categories.DEFAULT, "privacy-mode", "Hides sensitive information.");
+    public Privacy() {
+        super(Categories.DEFAULT, "privacy", "Hides sensitive information.");
     }
 
     public String transform(String s) {

@@ -39,7 +39,7 @@ public class GriefingUtils extends MeteorAddon {
         Modules.get().add(new ExplosiveHands());
         Modules.get().add(new GameModeNotifier());
         Modules.get().add(new NoFall());
-        Modules.get().add(new PrivacyMode());
+        Modules.get().add(new Privacy());
         Modules.get().add(new VanillaFlight());
         Modules.get().add(new WitherAdvertise());
     }
