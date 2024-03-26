@@ -32,7 +32,7 @@ public class GriefingUtils extends MeteorAddon {
         Modules.get().add(new AntiItemLag());
         Modules.get().add(new AutoLavacast());
         Modules.get().add(new AutoScoreboard());
-        Modules.get().add(new AutoSignPlus());
+        Modules.get().add(new SignChanger());
         Modules.get().add(new BetterPauseScreen());
         Modules.get().add(new ContainerPuke());
         Modules.get().add(new DoomBoom());
