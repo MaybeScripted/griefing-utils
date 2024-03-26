@@ -1,1 +1,3 @@
 accessWidener v2 named
+accessible method net/minecraft/client/gui/screen/GameMenuScreen disconnect ()V
+accessible field net/minecraft/client/option/ServerList servers Ljava/util/List;

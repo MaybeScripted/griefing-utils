@@ -1,0 +1,17 @@
+package griefingutils.mixin;
+
+import griefingutils.modules.PrivacyMode;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.misc.NameProtect;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+// Please meteor for fucks sake make an event for this because this mixin is soooooo cursed
+@Mixin(NameProtect.class)
+public class NameProtectMixin {
+    @ModifyVariable(method = "replaceName", at = @At("HEAD"), ordinal = 0, argsOnly = true, remap = false)
+    private String privacy(String original) {
+        return Modules.get().get(PrivacyMode.class).transform(original);
+    }
+}
