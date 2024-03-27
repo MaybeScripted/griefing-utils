@@ -6,13 +6,11 @@
     "ItemEntityMixin",
     "MinecraftClientMixin",
     "MultiplayerServerListWidget$ServerEntryMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "GameMenuScreenMixin",
+    "NameProtectMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "GameMenuScreenMixin",
-    "NameProtectMixin"
-  ]
+  }
 }
