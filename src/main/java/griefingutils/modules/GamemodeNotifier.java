@@ -6,9 +6,9 @@ import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket.Action;
 import net.minecraft.world.GameMode;
 
-public class GameModeNotifier extends BetterModule {
-    public GameModeNotifier() {
-        super(Categories.DEFAULT, "Gamemode Notifier", "Alerts you when someone changes their gamemode.");
+public class GamemodeNotifier extends BetterModule {
+    public GamemodeNotifier() {
+        super(Categories.DEFAULT, "gamemode-notifier", "Alerts you when someone changes their gamemode.");
     }
 
     @EventHandler

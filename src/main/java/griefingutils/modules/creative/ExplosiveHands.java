@@ -40,7 +40,7 @@ public class ExplosiveHands extends BetterModule {
     );
 
     public ExplosiveHands() {
-        super(Categories.DEFAULT, "explosive-hands", "Makes your hands explosive. (requires creative mode)");
+        super(Categories.DEFAULT, "explosive-hands", "Spawns explosions at the block you're looking at. (requires creative mode)");
     }
 
     @EventHandler

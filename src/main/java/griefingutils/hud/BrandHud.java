@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class BrandHud extends HudElement {
-    public static final HudElementInfo<BrandHud> INFO = new HudElementInfo<>(Groups.DEFAULT, "brand-hud", "cool hud", BrandHud::new);
+    public static final HudElementInfo<BrandHud> INFO = new HudElementInfo<>(Groups.DEFAULT, "brand-hud", "Shows the logo and spins it.", BrandHud::new);
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 

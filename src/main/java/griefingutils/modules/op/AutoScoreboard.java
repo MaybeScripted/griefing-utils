@@ -54,7 +54,7 @@ public class AutoScoreboard extends BetterModule {
     );
 
     public AutoScoreboard() {
-        super(Categories.DEFAULT, "auto-scoreboard", "Creates a scoreboard with some content (requires OP)");
+        super(Categories.DEFAULT, "auto-scoreboard", "Creates a scoreboard with some content. (requires OP)");
     }
 
     @EventHandler

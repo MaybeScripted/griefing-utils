@@ -3,7 +3,7 @@
   "id": "griefingutils",
   "version": "1.0.0",
   "name": "0x06's Griefing Utils",
-  "description": "Utilities for griefing servers in block game",
+  "description": "An addon for Meteor Client, that makes griefing faster and easier than ever before.",
   "authors": ["0x06", "DuckGuy"],
   "icon": "assets/griefing_utils/icon.png",
   "environment": "client",

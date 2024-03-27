@@ -224,7 +224,7 @@ public class ContainerAction extends BetterModule {
     public int count = 0;
 
     public ContainerAction() {
-        super(Categories.DEFAULT, "container-action", "Does stuff with nearby containers");
+        super(Categories.DEFAULT, "container-action", "Does stuff with nearby containers.");
     }
 
     @Override

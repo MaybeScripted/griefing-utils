@@ -28,18 +28,17 @@ public class GriefingUtils extends MeteorAddon {
 
     private static void registerModules() {
         Modules.get().add(new AntiBlockEntityLag());
-        Modules.get().add(new AntiFunny());
+        Modules.get().add(new AntiCrash());
         Modules.get().add(new AntiItemLag());
         Modules.get().add(new AutoLavacast());
         Modules.get().add(new AutoScoreboard());
-        Modules.get().add(new SignChanger());
         Modules.get().add(new BetterPauseScreen());
         Modules.get().add(new ContainerAction());
         Modules.get().add(new DoomBoom());
         Modules.get().add(new ExplosiveHands());
-        Modules.get().add(new GameModeNotifier());
-        Modules.get().add(new NoFall());
+        Modules.get().add(new GamemodeNotifier());
         Modules.get().add(new Privacy());
+        Modules.get().add(new SignChanger());
         Modules.get().add(new VanillaFlight());
         Modules.get().add(new WitherAdvertise());
     }
