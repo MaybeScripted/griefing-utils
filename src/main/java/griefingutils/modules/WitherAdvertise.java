@@ -26,6 +26,7 @@ public class WitherAdvertise extends BetterModule {
         .name("name")
         .description("Their names.")
         .defaultValue("")
+        .wide()
         .build()
     );
 
