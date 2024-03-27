@@ -5,6 +5,7 @@
   "client": [
     "ItemEntityMixin",
     "MinecraftClientMixin",
+    "MultiplayerServerListWidget$ServerEntryMixin",
     "PlayerEntityMixin"
   ],
   "injectors": {
