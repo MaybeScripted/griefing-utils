@@ -3,7 +3,6 @@ package griefingutils.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import griefingutils.GriefingUtils;
 import griefingutils.utils.entity.EggNbtGenerator;
-import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -47,7 +46,7 @@ public class HologramCommand extends BetterCommand {
             return SUCCESS;
         }
         if (last && lastImagePath == null) {
-            ChatUtils.warning("There is no last image!");
+            warning("There is no last image!");
             return SUCCESS;
         }
         PointerBuffer filter;
@@ -60,19 +59,19 @@ public class HologramCommand extends BetterCommand {
                 imagePath = TinyFileDialogs.tinyfd_openFileDialog(
                     "Select Image", null, filter, null, false);
                 if (imagePath == null) {
-                    ChatUtils.info("Canceled");
+                    info("Canceled");
                     return;
                 }
                 lastImagePath = imagePath;
             } else imagePath = lastImagePath;
 
             try {
-                ChatUtils.info("Selected: " + imagePath);
+                info("Selected: " + imagePath);
                 File file = new File(imagePath);
                 BufferedImage image = ImageIO.read(file);
-                ChatUtils.info("Original Resolution: %sx%s", image.getWidth(), image.getHeight());
+                info("Original Resolution: %sx%s", image.getWidth(), image.getHeight());
                 if (image.getWidth() * image.getHeight() > 128*128) {
-                    ChatUtils.warning("Image is too big, scaling down to 128x128");
+                    warning("Image is too big, scaling down to 128x128");
                     image = scaleImage(image, BufferedImage.TYPE_INT_RGB, 128, 128);
                 }
 
@@ -108,10 +107,10 @@ public class HologramCommand extends BetterCommand {
                     mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
                 }
                 mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
-                ChatUtils.info("Loaded Image");
+                info("Loaded Image");
 
             } catch (Exception e) {
-                ChatUtils.info("exception: %s", e);
+                info("exception: %s", e);
                 GriefingUtils.LOG.error("", e);
             }
 

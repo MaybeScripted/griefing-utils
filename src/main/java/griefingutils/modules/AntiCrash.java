@@ -83,7 +83,7 @@ public class AntiCrash extends BetterModule {
     }
 
     private void cancel(PacketEvent.Receive event, String reason) {
-        if (log.get()) ChatUtils.info("Server sent funny packet to you: " + reason);
+        if (log.get()) info("Server sent funny packet to you: " + reason);
         event.cancel();
     }
 }

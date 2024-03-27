@@ -3,7 +3,6 @@ package griefingutils.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import griefingutils.utils.CreativeUtils;
-import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -24,20 +23,20 @@ public class ClipboardGive extends BetterCommand {
         try {
             String clipboard = mc.keyboard.getClipboard();
             if (!clipboard.startsWith("/give")) {
-                ChatUtils.warning("Clipboard content is not a give command");
+                warning("Clipboard content is not a give command");
                 return SUCCESS;
             }
             String command = clipboard.substring(clipboard.indexOf(" ", 6) + 1);
             Item item = getItem(command);
             String nbt = getNbtString(command);
-            ChatUtils.info(String.valueOf(nbt));
+            info(String.valueOf(nbt));
             int count = getCount(command);
 
             CreativeUtils.giveToEmptySlot(item, nbt, null, count);
 
             return SUCCESS;
         } catch (Exception e) {
-            ChatUtils.warning("Give command is malformed");
+            warning("Give command is malformed");
             return SUCCESS;
         }
     }
