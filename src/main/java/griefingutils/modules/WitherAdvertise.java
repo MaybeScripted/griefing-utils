@@ -1,6 +1,7 @@
 package griefingutils.modules;
 
 import griefingutils.utils.CreativeUtils;
+import griefingutils.utils.entity.EggNbtGenerator;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -9,11 +10,14 @@ import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
+import org.jetbrains.annotations.Nullable;
 
 public class WitherAdvertise extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -35,7 +39,7 @@ public class WitherAdvertise extends BetterModule {
     private final Setting<Integer> amount = sgGeneral.add(new IntSetting.Builder()
         .name("amount")
         .description("The amount of withers you want to spawn.")
-        .defaultValue(1)
+        .defaultValue(10)
         .range(1, 100)
         .sliderRange(1, 100)
         .build()
@@ -44,7 +48,7 @@ public class WitherAdvertise extends BetterModule {
     private final Setting<Integer> range = sgGeneral.add(new IntSetting.Builder()
         .name("range")
         .description("How far away to spawn the withers.")
-        .defaultValue(100)
+        .defaultValue(50)
         .range(1, 200)
         .sliderRange(1, 200)
         .build()
@@ -54,7 +58,6 @@ public class WitherAdvertise extends BetterModule {
         super(Categories.DEFAULT, "wither-advertise", "Spawns withers nearby with a name.");
     }
 
-    // TODO code style
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if (!isCreative()) {
@@ -63,20 +66,28 @@ public class WitherAdvertise extends BetterModule {
             return;
         }
         ItemStack lastStack = mc.player.getMainHandStack();
+
         for (int i = 0; i < amount.get(); i++) {
-            double x = mc.player.getX() + range.get() - range.get() * 2 * mc.player.getRandom().nextFloat();
-            double z = mc.player.getZ() + range.get() - range.get() * 2 * mc.player.getRandom().nextFloat();
-
-            if (!mc.world.getChunkManager().isChunkLoaded(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))) return;
-
-            double y = mc.world.getTopY(Heightmap.Type.MOTION_BLOCKING, MathHelper.floor(x), MathHelper.floor(z)) + 20;
-
-            String nbt = "{EntityTag:{id:\"minecraft:wither\",Pos:[" + x + "," + y + "," + z + "],Health:4206969f,CustomName:'{\"text\": \"" + name.get() + "\", \"color\": \"" + color.get() + "\"}'}}";
-            CreativeUtils.giveItemWithNbtToSelectedSlot(Items.WITHER_SPAWN_EGG, nbt, null, 1);
-            BlockHitResult bhr = bhrAbovePlayer();
-            mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
+            Vec3d pos = getRandomPos();
+            if (pos == null) continue;
+            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(name.get(), color.get());
+            NbtCompound nbt = EggNbtGenerator.WITHER.asEggNbt(pos, NbtString.of(customName));
+            CreativeUtils.giveToSelectedSlot(Items.WITHER_SPAWN_EGG, nbt, null, 1);
+            mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhrAtEyes());
         }
+
         mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
         toggle();
+    }
+
+    @Nullable
+    private Vec3d getRandomPos() {
+        double x = mc.player.getX() + range.get() - range.get() * 2 * mc.player.getRandom().nextFloat();
+        double z = mc.player.getZ() + range.get() - range.get() * 2 * mc.player.getRandom().nextFloat();
+        int sx = ChunkSectionPos.getSectionCoord(x);
+        int sz = ChunkSectionPos.getSectionCoord(z);
+        if (!mc.world.getChunkManager().isChunkLoaded(sx, sz)) return null;
+        double y = mc.world.getTopY(Heightmap.Type.WORLD_SURFACE, MathHelper.floor(x), MathHelper.floor(z)) + 20;
+        return new Vec3d(x, y, z);
     }
 }

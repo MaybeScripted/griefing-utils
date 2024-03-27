@@ -2,15 +2,17 @@ package griefingutils.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import griefingutils.GriefingUtils;
+import griefingutils.utils.entity.EggNbtGenerator;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtDouble;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
@@ -38,6 +40,7 @@ public class HologramCommand extends BetterCommand {
             );
     }
 
+    // TODO maybe rewrite?
     private int execute(boolean last) {
         if (!isCreative()) {
             warning("You're not in creative mode!");
@@ -78,19 +81,8 @@ public class HologramCommand extends BetterCommand {
 
                 ItemStack lastStack = mc.player.getMainHandStack();
                 for (int y = 0; y < height; y++) {
-                    BlockHitResult bhr = bhrAbovePlayer();
-                    ItemStack hologram = new ItemStack(Items.COD_SPAWN_EGG);
-                    NbtCompound entityTag = new NbtCompound();
-                    hologram.setSubNbt("EntityTag", entityTag);
-                    entityTag.putString("id", "minecraft:armor_stand");
-                    entityTag.putBoolean("CustomNameVisible", true);
-                    entityTag.putBoolean("Marker", true);
-                    entityTag.putBoolean("Invisible", true);
-                    NbtList pos = new NbtList();
-                    pos.add(NbtDouble.of(mc.player.getX()));
-                    pos.add(NbtDouble.of(mc.player.getY() + (height - y) * 0.23));
-                    pos.add(NbtDouble.of(mc.player.getZ()));
-                    entityTag.put("Pos", pos);
+                    BlockHitResult bhr = bhrAtEyes();
+
                     StringBuilder JSON = new StringBuilder("[");
 
                     int lastColor = image.getRGB(0, y);
@@ -107,13 +99,16 @@ public class HologramCommand extends BetterCommand {
                     }
                     appendToBuilder(JSON, lastColor, tmp, false);
 
-                    entityTag.putString("CustomName", JSON + "]");
+                    Vec3d pos = mc.player.getPos().offset(Direction.UP, (height - y) * 0.23);
+                    NbtCompound nbt = EggNbtGenerator.ARMOR_STAND.asEggNbt(pos, NbtString.of(JSON + "]"));
+                    ItemStack hologram = new ItemStack(Items.COD_SPAWN_EGG);
+                    hologram.setNbt(nbt);
 
                     mc.interactionManager.clickCreativeStack(hologram, 36 + mc.player.getInventory().selectedSlot);
                     mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
                 }
                 mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
-                ChatUtils.info("Loaded Image", image.getWidth(), image.getHeight());
+                ChatUtils.info("Loaded Image");
 
             } catch (Exception e) {
                 ChatUtils.info("exception: %s", e);

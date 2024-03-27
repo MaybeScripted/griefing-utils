@@ -11,9 +11,7 @@ import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.*;
 
 import java.util.function.Consumer;
 
@@ -80,11 +78,17 @@ public interface MCUtil {
         networkHandler().sendCommand(command);
     }
 
-    default BlockHitResult bhrAbovePlayer() {
+    default BlockHitResult bhrAtEyes() {
+        Vec3d eyePos = MC.player.getPos();
+        BlockPos blockPos = new BlockPos(
+            MathHelper.floor(eyePos.x),
+            MathHelper.floor(eyePos.y),
+            MathHelper.floor(eyePos.z)
+        );
         return new BlockHitResult(
-            MC.player.getPos().add(0, 1, 0),
+            eyePos,
             Direction.UP,
-            new BlockPos(MC.player.getBlockPos().add(0, 1, 0)),
+            blockPos,
             false
         );
     }

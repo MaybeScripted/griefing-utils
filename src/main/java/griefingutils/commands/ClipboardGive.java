@@ -33,7 +33,7 @@ public class ClipboardGive extends BetterCommand {
             ChatUtils.info(String.valueOf(nbt));
             int count = getCount(command);
 
-            CreativeUtils.giveItemWithNbtToEmptySlot(item, nbt, null, count);
+            CreativeUtils.giveToEmptySlot(item, nbt, null, count);
 
             return SUCCESS;
         } catch (Exception e) {
