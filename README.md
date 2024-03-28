@@ -18,6 +18,7 @@
 - `Wither Advertise` Spawns withers nearby with a name.
 
 ## Commands
+- `cc-crash` Command Complete Crash. Crashes servers using a stack overflow.
 - `clipboard-give` Gives an item from a copied give command. (requires creative mode)
 - `cracked-kick` Kicks players on cracked servers.
 - `hologram` Loads an image into the world. (requires creative mode)
