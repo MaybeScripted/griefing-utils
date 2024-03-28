@@ -7,6 +7,7 @@ import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -57,6 +58,8 @@ public class VanillaFlight extends BetterModule {
 
     @EventHandler
     private void postTick(TickEvent.Post event) {
+        if (!Utils.canUpdate()) return;
+
         // packet anti kick
         if (mc.world.getTime() % 10 == 0) if (canMoveHorizontally(-0.1)) {
             sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 0.1, mc.player.getZ(), false));

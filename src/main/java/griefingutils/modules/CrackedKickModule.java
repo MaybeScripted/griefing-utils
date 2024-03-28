@@ -69,6 +69,7 @@ public class CrackedKickModule extends BetterModule {
         if (!ban.get()) toggle();
     }
 
+
     public static void kick(CrackedKickModule module, PlayerListEntry entry, boolean kickFriends) {
         MinecraftClient mc = GriefingUtils.MC;
         GameProfile profile = entry.getProfile();

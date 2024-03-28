@@ -1,5 +1,6 @@
 package griefingutils.modules;
 
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.packets.InventoryEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -50,7 +51,7 @@ public class ContainerAction extends BetterModule {
 
     private final Setting<ThrowDirection> throwDirection = sgThrow.add(new EnumSetting.Builder<ThrowDirection>()
         .name("throw-direction")
-        .description("Lets you change the direction you puke the items at.")
+        .description("Lets you change the direction you throw the items at.")
         .defaultValue(ThrowDirection.DOWNWARDS)
         .visible(throwItems::get)
         .build()
@@ -58,16 +59,8 @@ public class ContainerAction extends BetterModule {
 
     private final Setting<Boolean> throwFilter = sgThrow.add(new BoolSetting.Builder()
         .name("filter")
-        .description("Whether to filter the items you puke.")
+        .description("Whether to filter the items you throw.")
         .defaultValue(false)
-        .visible(throwItems::get)
-        .build()
-    );
-
-    private final Setting<ListMode> throwFilterType = sgThrow.add(new EnumSetting.Builder<ListMode>()
-        .name("filter-type")
-        .description("Whether to filter the items you puke.")
-        .defaultValue(ListMode.Blacklist)
         .visible(throwItems::get)
         .build()
     );
@@ -75,7 +68,7 @@ public class ContainerAction extends BetterModule {
     private final Setting<List<Item>> throwItemFilter = sgThrow.add(new ItemListSetting.Builder()
         .name("filter-items")
         .description("The items to filter.")
-        .defaultValue(List.of(
+        .defaultValue(
             Items.LAVA_BUCKET,
             Items.WATER_BUCKET,
             Items.BUCKET,
@@ -86,9 +79,17 @@ public class ContainerAction extends BetterModule {
             Items.FLINT,
             Items.IRON_INGOT,
             Items.FIRE_CHARGE
-        ))
+        )
         .visible(() -> throwItems.get() && throwFilter.get())
         .onChanged((value) -> invalidateContainers())
+        .build()
+    );
+
+    private final Setting<ListMode> throwFilterType = sgThrow.add(new EnumSetting.Builder<ListMode>()
+        .name("filter-type")
+        .description("The type of the filter.")
+        .defaultValue(ListMode.Blacklist)
+        .visible(throwItems::get)
         .build()
     );
 
@@ -275,18 +276,18 @@ public class ContainerAction extends BetterModule {
                 handleChest(be.getPos(), cbe -> {
                     count++;
                     processedContainers.add(cbe.getPos());
-                    renderStorage(be.getPos(), false);
+                    renderContainer(be.getPos(), false);
                 }, (cbe1, cbe2) -> {
                     count += 2;
                     processedContainers.add(cbe1.getPos());
                     processedContainers.add(cbe2.getPos());
-                    renderStorage(cbe1.getPos(), false);
-                    renderStorage(cbe2.getPos(), false);
+                    renderContainer(cbe1.getPos(), false);
+                    renderContainer(cbe2.getPos(), false);
                 });
             } else {
                 count++;
                 processedContainers.add(be.getPos());
-                renderStorage(be.getPos(), false);
+                renderContainer(be.getPos(), false);
             }
         }
     }
@@ -300,16 +301,11 @@ public class ContainerAction extends BetterModule {
             int rangeSquared = renderRange.get() * renderRange.get();
             if (mc.player.getEyePos().squaredDistanceTo(be.getPos().toCenterPos()) > rangeSquared) continue;
 
-            ifBlock: if (renderUnopenedContainers.get()) {
-                if (processedContainers.contains(be.getPos()))
-                    break ifBlock;
-                renderStorage(be.getPos(), 1, false, false);
-            }
+            if (renderUnopenedContainers.get() && !processedContainers.contains(be.getPos()))
+                renderContainer(be.getPos(), 1, false, false);
 
-            if (renderFound.get()) {
-                if (!importantContainers.contains(be.getPos())) continue;
-                renderStorage(be.getPos(), 1, false, true);
-            }
+            if (renderFound.get() && importantContainers.contains(be.getPos()))
+                renderContainer(be.getPos(), 1, false, true);
         }
     }
 
@@ -339,13 +335,13 @@ public class ContainerAction extends BetterModule {
             if (!handler.getSlot(i).hasStack()) continue;
             ItemStack stack = handler.getSlot(i).getStack();
 
-            ifBlock: if (throwItems.get()) {
+            if (throwItems.get()) {
                 if (throwFilter.get()) {
                     boolean contains = throwItemFilter.get().contains(stack.getItem());
-                    if (throwFilterType.get() == ListMode.Blacklist && !contains) break ifBlock;
-                    else if (throwFilterType.get() == ListMode.Whitelist && contains) break ifBlock;
-                }
-                mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
+                    if ((throwFilterType.get() == ListMode.Blacklist && !contains) ||
+                        throwFilterType.get() == ListMode.Whitelist && contains) {
+                    }
+                } else mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
             }
 
             if (search.get()) {
@@ -412,11 +408,11 @@ public class ContainerAction extends BetterModule {
         cb.getBlockEntitySource(blockState, mc.world, pos, true).apply(chestHandler);
     }
 
-    private void renderStorage(BlockPos pos, boolean important) {
-        renderStorage(pos, 10, true, important);
+    private void renderContainer(BlockPos pos, boolean important) {
+        renderContainer(pos, 10, true, important);
     }
 
-    private void renderStorage(BlockPos pos, int duration, boolean fade, boolean important) {
+    private void renderContainer(BlockPos pos, int duration, boolean fade, boolean important) {
         if (!render.get()) return;
         RenderUtils.renderTickingBlock(
             pos.toImmutable(),
@@ -447,10 +443,5 @@ public class ContainerAction extends BetterModule {
             float pitch = player.getPitch();
             return rotationGetter.apply(yaw, pitch);
         }
-    }
-
-    public enum ListMode {
-        Whitelist,
-        Blacklist
     }
 }

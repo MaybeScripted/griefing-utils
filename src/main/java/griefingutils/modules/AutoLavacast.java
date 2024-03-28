@@ -1,11 +1,11 @@
 package griefingutils.modules;
 
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.movement.Scaffold;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
@@ -28,16 +28,16 @@ public class AutoLavacast extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgRender = settings.createGroup("Render");
 
-    private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
+    private final Setting<List<Block>> blocksFilter = sgGeneral.add(new BlockListSetting.Builder()
         .name("blocks")
-        .description("Selected blocks.")
+        .description("The blocks to filter.")
         .build()
     );
 
-    private final Setting<Scaffold.ListMode> blocksFilter = sgGeneral.add(new EnumSetting.Builder<Scaffold.ListMode>()
+    private final Setting<ListMode> blocksFilterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
         .name("blocks-filter")
-        .description("How to use the block list setting")
-        .defaultValue(Scaffold.ListMode.Blacklist)
+        .description("The type of the filter.")
+        .defaultValue(ListMode.Blacklist)
         .build()
     );
 
@@ -79,7 +79,7 @@ public class AutoLavacast extends BetterModule {
 
     private final Setting<Integer> ticksPerBlock = sgGeneral.add(new IntSetting.Builder()
         .name("ticks-per-block")
-        .description("How many ticks to wait between block places")
+        .description("How many ticks to wait between block places.")
         .defaultValue(1)
         .range(1, 10)
         .sliderRange(1, 10)
@@ -141,18 +141,17 @@ public class AutoLavacast extends BetterModule {
 
     @Override
     public void onActivate() {
-        if (Modules.get().get(VanillaFlight.class).isActive()) Modules.get().get(VanillaFlight.class).toggle();
-        if (enablePlace.get() && mc.player != null) {
-            ((IVec3d)mc.player.getVelocity()).set(0, 0, 0);
-            BlockPos pos = mc.player.getBlockPos().down();
-            place(pos);
-            if (enablePlaceTeleport.get()) mc.player.setPosition(pos.toCenterPos().offset(Direction.UP, 0.5));
-        }
+        if (!Utils.canUpdate() || !enablePlace.get()) return;
+
+        ((IVec3d)mc.player.getVelocity()).set(0, 0, 0);
+        BlockPos pos = mc.player.getBlockPos().down();
+        place(pos);
+        if (enablePlaceTeleport.get()) mc.player.setPosition(pos.toCenterPos().offset(Direction.UP, 0.5));
     }
 
     @EventHandler
     private void onMove(PlayerMoveEvent event) {
-        if (mc.player == null) return;
+        if (!Utils.canUpdate()) return;
         boolean goingDown = mc.player.getPitch() > 30;
         List<BlockPos> blockPoses = getBlockPoses(fastMode.get() ? blocksPerTick.get() : 1, goingDown);
 
@@ -223,8 +222,8 @@ public class AutoLavacast extends BetterModule {
 
         Block block = ((BlockItem) itemStack.getItem()).getBlock();
 
-        if (blocksFilter.get() == Scaffold.ListMode.Blacklist && blocks.get().contains(block)) return false;
-        else if (blocksFilter.get() == Scaffold.ListMode.Whitelist && !blocks.get().contains(block)) return false;
+        if ((blocksFilterType.get() == ListMode.Blacklist && blocksFilter.get().contains(block)) ||
+            (blocksFilterType.get() == ListMode.Whitelist && !blocksFilter.get().contains(block))) return false;
 
         if (!Block.isShapeFullCube(block.getDefaultState().getCollisionShape(mc.world, pos))) return false;
         return !(block instanceof FallingBlock) || !FallingBlock.canFallThrough(mc.world.getBlockState(pos));

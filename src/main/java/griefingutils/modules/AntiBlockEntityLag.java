@@ -1,10 +1,8 @@
 package griefingutils.modules;
 
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.render.RenderBlockEntityEvent;
-import meteordevelopment.meteorclient.settings.BlockListSetting;
-import meteordevelopment.meteorclient.settings.IntSetting;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
@@ -28,8 +26,8 @@ public class AntiBlockEntityLag extends BetterModule {
     );
 
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
-        .name("blocks")
-        .description("The blocks")
+        .name("filter-blocks")
+        .description("The blocks to filter.")
         .defaultValue(
             Blocks.CHEST,
             Blocks.TRAPPED_CHEST,
@@ -52,6 +50,13 @@ public class AntiBlockEntityLag extends BetterModule {
             Blocks.ORANGE_SHULKER_BOX
         )
         .filter(AntiBlockEntityLag::isBlockEntity)
+        .build()
+    );
+
+    private final Setting<ListMode> throwFilterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
+        .name("filter-type")
+        .description("The type of the filter.")
+        .defaultValue(ListMode.Blacklist)
         .build()
     );
 

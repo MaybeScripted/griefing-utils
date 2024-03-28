@@ -1,12 +1,12 @@
 package griefingutils.modules;
 
 import griefingutils.utils.CreativeUtils;
+import griefingutils.utils.MiscUtil;
 import griefingutils.utils.entity.EggNbtGenerator;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.IntSetting;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.settings.SettingGroup;
-import meteordevelopment.meteorclient.settings.StringSetting;
+import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.utils.render.color.Color;
+import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -25,15 +25,14 @@ public class WitherAdvertise extends BetterModule {
     private final Setting<String> name = sgGeneral.add(new StringSetting.Builder()
         .name("name")
         .description("Their names.")
-        .defaultValue("")
         .wide()
         .build()
     );
 
-    private final Setting<String> color = sgGeneral.add(new StringSetting.Builder()
+    private final Setting<SettingColor> color = sgGeneral.add(new ColorSetting.Builder()
         .name("color")
         .description("The color of their names.")
-        .defaultValue("#FF0000")
+        .defaultValue(new Color(255, 75, 0))
         .build()
     );
 
@@ -71,7 +70,7 @@ public class WitherAdvertise extends BetterModule {
         for (int i = 0; i < amount.get(); i++) {
             Vec3d pos = getRandomPos();
             if (pos == null) continue;
-            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(name.get(), color.get());
+            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(name.get(), MiscUtil.hexifyColor(color.get()));
             NbtCompound nbt = EggNbtGenerator.WITHER.asEggNbt(pos, NbtString.of(customName));
             CreativeUtils.giveToSelectedSlot(Items.WITHER_SPAWN_EGG, nbt, null, 1);
             mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhrAtEyes());

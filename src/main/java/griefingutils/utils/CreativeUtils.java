@@ -22,6 +22,10 @@ public class CreativeUtils {
             stack.setNbt(nbt);
 
         if(customName != null) stack.setCustomName(customName);
+        giveToEmptySlot(stack);
+    }
+
+    public static void giveToEmptySlot(ItemStack stack) {
         if (GriefingUtils.MC.player.getMainHandStack().isEmpty())
             GriefingUtils.MC.interactionManager.clickCreativeStack(stack, 36 + GriefingUtils.MC.player.getInventory().selectedSlot);
         else {
@@ -43,6 +47,10 @@ public class CreativeUtils {
             stack.setNbt(nbt);
 
         if(customName != null) stack.setCustomName(customName);
+        giveToSelectedSlot(stack);
+    }
+
+    public static void giveToSelectedSlot(ItemStack stack) {
         GriefingUtils.MC.interactionManager.clickCreativeStack(stack, 36 + GriefingUtils.MC.player.getInventory().selectedSlot);
     }
 

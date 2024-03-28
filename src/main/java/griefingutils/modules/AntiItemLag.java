@@ -1,12 +1,13 @@
 package griefingutils.modules;
 
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.render.RenderItemEntityEvent;
+import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.ItemListSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 
 import java.util.List;
 
@@ -14,9 +15,15 @@ public class AntiItemLag extends BetterModule {
     public SettingGroup sgGeneral = settings.getDefaultGroup();
 
     public final Setting<List<Item>> items = sgGeneral.add(new ItemListSetting.Builder()
-        .name("items")
-        .description("The items not to render.")
-        .defaultValue(Items.BAMBOO)
+        .name("filter-items")
+        .description("The items to filter.")
+        .build()
+    );
+
+    private final Setting<ListMode> filterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
+        .name("filter-type")
+        .description("The type of the filter.")
+        .defaultValue(ListMode.Blacklist)
         .build()
     );
 
@@ -26,6 +33,9 @@ public class AntiItemLag extends BetterModule {
 
     @EventHandler
     public void onRender(RenderItemEntityEvent event) {
-        if (items.get().contains(event.itemEntity.getStack().getItem())) event.cancel();
+        Item item = event.itemEntity.getStack().getItem();
+        if ((filterType.get() == ListMode.Blacklist && items.get().contains(item)) ||
+            (filterType.get() == ListMode.Whitelist && !items.get().contains(item)))
+            event.cancel();
     }
 }

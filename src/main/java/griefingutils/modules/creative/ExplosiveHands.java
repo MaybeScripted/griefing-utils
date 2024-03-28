@@ -52,14 +52,17 @@ public class ExplosiveHands extends BetterModule {
         }
 
         if (!mc.options.attackKey.isPressed() || mc.currentScreen != null) return;
+        ItemStack lastStack = mc.player.getMainHandStack();
+
         HitResult hitResult = mc.cameraEntity.raycast(900, 0, false);
         if (hitResult.getType() == HitResult.Type.MISS) return;
         Vec3d pos = hitResult.getPos().offset(Direction.DOWN, 1);
         NbtCompound nbt = entity.get().generator.asEggNbt(pos, NbtByte.of(strength.get().byteValue()));
-        ItemStack lastStack = mc.player.getMainHandStack();
 
         CreativeUtils.giveToSelectedSlot(Items.MOOSHROOM_SPAWN_EGG, nbt, null, 1);
         mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhrAtEyes());
-        mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
+
+        CreativeUtils.giveToSelectedSlot(lastStack);
+
     }
 }

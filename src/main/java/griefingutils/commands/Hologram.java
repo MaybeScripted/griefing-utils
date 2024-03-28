@@ -2,6 +2,7 @@ package griefingutils.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import griefingutils.GriefingUtils;
+import griefingutils.utils.CreativeUtils;
 import griefingutils.utils.MiscUtil;
 import griefingutils.utils.entity.EggNbtGenerator;
 import net.minecraft.command.CommandSource;
@@ -104,17 +105,16 @@ public class Hologram extends BetterCommand {
                     ItemStack hologram = new ItemStack(Items.COD_SPAWN_EGG);
                     hologram.setNbt(nbt);
 
-                    mc.interactionManager.clickCreativeStack(hologram, 36 + mc.player.getInventory().selectedSlot);
+                    CreativeUtils.giveToSelectedSlot(hologram);
                     mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhr);
                 }
-                mc.interactionManager.clickCreativeStack(lastStack, 36 + mc.player.getInventory().selectedSlot);
+                CreativeUtils.giveToSelectedSlot(lastStack);
                 info("Loaded Image");
 
             } catch (Exception e) {
                 info("exception: %s", e);
                 GriefingUtils.LOG.error("", e);
             }
-
         });
         return SUCCESS;
     }
