@@ -28,7 +28,7 @@ public class AntiItemLag extends BetterModule {
     );
 
     public AntiItemLag() {
-        super(Categories.DEFAULT, "anti-item-lag", "Disables the ticking and rendering of the specified items.");
+        super(Categories.DEFAULT, "anti-item-lag", "Disables the ticking, only renders the shadow of the specified items.");
     }
 
     @EventHandler

@@ -7,7 +7,6 @@ import meteordevelopment.meteorclient.utils.player.PlayerUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 
 import java.util.List;
@@ -28,27 +27,6 @@ public class AntiBlockEntityLag extends BetterModule {
     private final Setting<List<Block>> blocks = sgGeneral.add(new BlockListSetting.Builder()
         .name("filter-blocks")
         .description("The blocks to filter.")
-        .defaultValue(
-            Blocks.CHEST,
-            Blocks.TRAPPED_CHEST,
-            Blocks.SHULKER_BOX,
-            Blocks.RED_SHULKER_BOX,
-            Blocks.BLUE_SHULKER_BOX,
-            Blocks.YELLOW_SHULKER_BOX,
-            Blocks.GRAY_SHULKER_BOX,
-            Blocks.LIGHT_GRAY_SHULKER_BOX,
-            Blocks.CYAN_SHULKER_BOX,
-            Blocks.BROWN_SHULKER_BOX,
-            Blocks.BLACK_SHULKER_BOX,
-            Blocks.GREEN_SHULKER_BOX,
-            Blocks.LIGHT_BLUE_SHULKER_BOX,
-            Blocks.LIME_SHULKER_BOX,
-            Blocks.PINK_SHULKER_BOX,
-            Blocks.MAGENTA_SHULKER_BOX,
-            Blocks.PURPLE_SHULKER_BOX,
-            Blocks.WHITE_SHULKER_BOX,
-            Blocks.ORANGE_SHULKER_BOX
-        )
         .filter(AntiBlockEntityLag::isBlockEntity)
         .build()
     );
