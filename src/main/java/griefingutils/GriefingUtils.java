@@ -44,9 +44,10 @@ public class GriefingUtils extends MeteorAddon {
     }
 
     private static void registerCommands() {
+        Commands.add(new CommandCompleteCrash());
         Commands.add(new ClipboardGive());
         Commands.add(new CrackedKick());
-        Commands.add(new HologramCommand());
+        Commands.add(new Hologram());
         Commands.add(new PurpurCrash());
     }
 
