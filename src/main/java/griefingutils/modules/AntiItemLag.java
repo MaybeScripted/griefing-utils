@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 import java.util.List;
 
 public class AntiItemLag extends BetterModule {
-    public SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     public final Setting<List<Item>> items = sgGeneral.add(new ItemListSetting.Builder()
         .name("filter-items")
@@ -20,7 +20,7 @@ public class AntiItemLag extends BetterModule {
         .build()
     );
 
-    private final Setting<ListMode> filterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
+    public final Setting<ListMode> filterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
         .name("filter-type")
         .description("The type of the filter.")
         .defaultValue(ListMode.Blacklist)

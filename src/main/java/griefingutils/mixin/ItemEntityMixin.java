@@ -1,6 +1,7 @@
 package griefingutils.mixin;
 
 import griefingutils.modules.AntiItemLag;
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -21,10 +22,10 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void onItemTick(CallbackInfo ci) {
-        AntiItemLag antiItemLag = Modules.get().get(AntiItemLag.class);
-        if (getWorld().isClient &&
-            antiItemLag.isActive() &&
-            antiItemLag.items.get().contains(getStack().getItem())
-        ) ci.cancel();
+        AntiItemLag module = Modules.get().get(AntiItemLag.class);
+        if (!module.isActive() || !getWorld().isClient) return;
+        if (module.filterType.get() == ListMode.Blacklist && module.items.get().contains(getStack().getItem()) ||
+            module.filterType.get() == ListMode.Whitelist && !module.items.get().contains(getStack().getItem()))
+            ci.cancel();
     }
 }
