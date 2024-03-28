@@ -2,6 +2,7 @@ package griefingutils.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import griefingutils.GriefingUtils;
+import griefingutils.utils.MiscUtil;
 import griefingutils.utils.entity.EggNbtGenerator;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
@@ -128,13 +129,7 @@ public class Hologram extends BetterCommand {
     }
 
     public static void appendToBuilder(StringBuilder JSON, int lastColor, StringBuilder tmp, boolean appendComma) {
-        String r = Integer.toHexString(lastColor >> 16 & 0xFF);
-        r = "0".repeat(2 - r.length()) + r;
-        String g = Integer.toHexString(lastColor >> 8 & 0xFF);
-        g = "0".repeat(2 - g.length()) + g;
-        String b = Integer.toHexString(lastColor & 0xFF);
-        b = "0".repeat(2 - b.length()) + b;
-        String colorString = "#" + r + g + b;
+        String colorString = MiscUtil.hexifyColor(lastColor);
         JSON.append("{\"text\":\"")
             .append(tmp)
             .append("\", \"color\": \"")

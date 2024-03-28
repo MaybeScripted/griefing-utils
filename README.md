@@ -6,7 +6,6 @@
 - `Anti Crash` Cancels packets that may freeze your game.
 - `Anti Item Lag` Disables the ticking and rendering of the specified items.
 - `Auto Lavacast` Lava casting made easy.
-- `Auto Scoreboard` Creates a scoreboard with some content (requires OP)
 - `Better Pause Screen` Shows "More" button instead of "Give Feedback" and makes CTRL + C copy the server IP.
 - `Container Action` Does stuff with nearby containers.
 - `Cracked Kick` Kicks everyone on a cracked server.
@@ -14,6 +13,7 @@
 - `Explosive Hands` Spawns explosions at the block you're looking at. (requires creative mode)
 - `Gamemode Notifier` Alerts you when someone changes their gamemode."
 - `Privacy` Hides sensitive information.
+- `Sidebar Advertise` Creates a scoreboard with some content (requires OP)
 - `Sign Changer` Changes the text of nearby signs.
 - `Vanilla Flight` Flight with smart packet-based anti-kick.
 - `Wither Advertise` Spawns withers nearby with a name.
