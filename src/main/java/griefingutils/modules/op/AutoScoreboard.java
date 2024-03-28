@@ -20,7 +20,7 @@ public class AutoScoreboard extends BetterModule {
 
     private final Setting<String> title = sgTitle.add(new StringSetting.Builder()
         .name("title")
-        .description("Title of the scoreboard to create. Supports Starscript.")
+        .description("The title of the scoreboard")
         .defaultValue("0x06's Griefing Utils")
         .wide()
         .renderer(StarscriptTextBoxRenderer.class)
@@ -58,7 +58,7 @@ public class AutoScoreboard extends BetterModule {
     }
 
     @EventHandler
-    private void onTick(TickEvent.Post event) {
+    private void postTick(TickEvent.Post event) {
         if(!hasOp()) {
             warning("You don't have OP");
             toggle();

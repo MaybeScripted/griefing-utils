@@ -38,6 +38,7 @@ public class GriefingUtils extends MeteorAddon {
         Modules.get().add(new ExplosiveHands());
         Modules.get().add(new GamemodeNotifier());
         Modules.get().add(new Privacy());
+        Modules.get().add(new CrackedKickModule());
         Modules.get().add(new SignChanger());
         Modules.get().add(new VanillaFlight());
         Modules.get().add(new WitherAdvertise());
@@ -46,7 +47,7 @@ public class GriefingUtils extends MeteorAddon {
     private static void registerCommands() {
         Commands.add(new CommandCompleteCrash());
         Commands.add(new ClipboardGive());
-        Commands.add(new CrackedKick());
+        Commands.add(new CrackedKickCommand());
         Commands.add(new Hologram());
         Commands.add(new PurpurCrash());
     }

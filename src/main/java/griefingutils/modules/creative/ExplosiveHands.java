@@ -44,7 +44,7 @@ public class ExplosiveHands extends BetterModule {
     }
 
     @EventHandler
-    private void onTick(TickEvent.Post event) {
+    private void postTick(TickEvent.Post event) {
         if (!isCreative()) {
             warning("You're not in creative mode!");
             toggle();

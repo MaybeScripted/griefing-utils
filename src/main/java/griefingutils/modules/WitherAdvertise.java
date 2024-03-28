@@ -60,7 +60,7 @@ public class WitherAdvertise extends BetterModule {
     }
 
     @EventHandler
-    private void onTick(TickEvent.Post event) {
+    private void postTick(TickEvent.Post event) {
         if (!isCreative()) {
             warning("You don't have creative");
             toggle();
