@@ -1,6 +1,10 @@
 ## 0x06's Griefing Utils
 0x06's Griefing Utils is an addon for Meteor Client, that makes griefing faster and easier than ever before.
 
+Everything is original, no part is skidded. (except for things from old projects of mine)
+
+Every text field in the module config menu supports Starscript.
+
 ### Modules
 - `Anti Block Entity Lag` Lets you change the render distance of specified block entities."
 - `Anti Crash` Cancels packets that may freeze your game.
@@ -21,7 +25,7 @@
 ### Commands
 - `cc-crash` Command Complete Crash. Crashes servers using a stack overflow.
 - `clipboard-give` Gives an item from a copied give command. (requires creative mode)
-- `cracked-kick` Kicks a player on a cracked server. Configure with the module.
+- `cracked-kick` Kicks a player on a cracked server. Configure with the module that has the same name.
 - `hologram` Loads an image into the world. (requires creative mode)
 - `purpur-crash` Sends funny CustomPayloadC2S packets to the server.
 

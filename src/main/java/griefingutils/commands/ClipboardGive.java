@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class ClipboardGive extends BetterCommand {
     public ClipboardGive() {
@@ -49,6 +50,7 @@ public class ClipboardGive extends BetterCommand {
         return Registries.ITEM.get(new Identifier(identifierString));
     }
 
+    @Nullable
     private static String getNbtString(String command) {
         boolean hasNbt = command.contains("{");
         if (!hasNbt) return null;

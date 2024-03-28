@@ -2,7 +2,7 @@ package griefingutils.modules.op;
 
 import griefingutils.modules.BetterModule;
 import griefingutils.modules.Categories;
-import griefingutils.utils.MiscUtil;
+import griefingutils.utils.MiscUtils;
 import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.starscript.Script;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class SidebarAdvertise extends BetterModule {
         String scoreboardID = RandomStringUtils.randomAlphanumeric(6).toLowerCase(Locale.ROOT);
         if (!sendCommandChecked(
             "scoreboard objectives add %s dummy {\"text\":\"%s\",\"color\":\"%s\"}"
-                .formatted(scoreboardID, title, MiscUtil.hexifyColor(titleColor.get())),
+                .formatted(scoreboardID, title, MiscUtils.hexifyColor(titleColor.get())),
             s -> "Title is too long! Reduce it by %d characters."
                 .formatted(s.length() - 255)
         )) return;
@@ -88,7 +89,7 @@ public class SidebarAdvertise extends BetterModule {
             sendCommand("team add %s".formatted(teamID));
             if (!sendCommandChecked(
                 "team modify %s suffix {\"text\":\" %s\",\"color\":\"%s\"}"
-                    .formatted(teamID, line, MiscUtil.hexifyColor(linesColor.get())),
+                    .formatted(teamID, line, MiscUtils.hexifyColor(linesColor.get())),
                 s -> "Content line #%d is too long! Reduce it by %d characters."
                     .formatted(lineNum, s.length() - 255)
             )) return;
@@ -100,6 +101,7 @@ public class SidebarAdvertise extends BetterModule {
         toggle();
     }
 
+    @Nullable
     private String parseTitle() {
         Script compiledTitle = MeteorStarscript.compile(title.get());
         if (compiledTitle == null) {
@@ -110,6 +112,7 @@ public class SidebarAdvertise extends BetterModule {
         return MeteorStarscript.run(compiledTitle);
     }
 
+    @Nullable
     private List<String> parseLines() {
         List<String> uncompiledLines = this.lines.get();
         List<String> lines = new ArrayList<>(uncompiledLines.size());

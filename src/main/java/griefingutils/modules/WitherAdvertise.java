@@ -1,13 +1,16 @@
 package griefingutils.modules;
 
 import griefingutils.utils.CreativeUtils;
-import griefingutils.utils.MiscUtil;
+import griefingutils.utils.MiscUtils;
 import griefingutils.utils.entity.EggNbtGenerator;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
+import meteordevelopment.starscript.Script;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -26,6 +29,7 @@ public class WitherAdvertise extends BetterModule {
         .name("name")
         .description("Their names.")
         .wide()
+        .renderer(StarscriptTextBoxRenderer.class)
         .build()
     );
 
@@ -65,12 +69,13 @@ public class WitherAdvertise extends BetterModule {
             toggle();
             return;
         }
+        if (parseName() == null) return;
         ItemStack lastStack = mc.player.getMainHandStack();
 
         for (int i = 0; i < amount.get(); i++) {
             Vec3d pos = getRandomPos();
             if (pos == null) continue;
-            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(name.get(), MiscUtil.hexifyColor(color.get()));
+            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(parseName(), MiscUtils.hexifyColor(color.get()));
             NbtCompound nbt = EggNbtGenerator.WITHER.asEggNbt(pos, NbtString.of(customName));
             CreativeUtils.giveToSelectedSlot(Items.WITHER_SPAWN_EGG, nbt, null, 1);
             mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhrAtEyes());
@@ -89,5 +94,16 @@ public class WitherAdvertise extends BetterModule {
         if (!mc.world.getChunkManager().isChunkLoaded(sx, sz)) return null;
         double y = mc.world.getTopY(Heightmap.Type.WORLD_SURFACE, MathHelper.floor(x), MathHelper.floor(z)) + 20;
         return new Vec3d(x, y, z);
+    }
+
+    @Nullable
+    private String parseName() {
+        Script compiledName = MeteorStarscript.compile(name.get());
+        if (compiledName == null) {
+            warning("Name is malformed!");
+            toggle();
+            return null;
+        }
+        return MeteorStarscript.run(compiledName);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Collection;
 
 public class CrackedKickCommand extends BetterCommand {
     public CrackedKickCommand() {
-        super("cracked-kick", "Kicks a player on a cracked server. Configure with the module.", "ckick");
+        super("cracked-kick", "Kicks a player on a cracked server. Configure with the module that has the same name.", "ckick");
     }
 
     @Override

@@ -54,6 +54,7 @@ public class CreativeUtils {
         GriefingUtils.MC.interactionManager.clickCreativeStack(stack, 36 + GriefingUtils.MC.player.getInventory().selectedSlot);
     }
 
+    @Nullable
     public static NbtCompound fromSnbt(String snbt) throws InvalidNbtException {
         if (snbt == null) return null;
         try {

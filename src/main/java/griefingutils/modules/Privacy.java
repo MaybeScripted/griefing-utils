@@ -1,10 +1,15 @@
 package griefingutils.modules;
 
+import griefingutils.utils.MiscUtils;
+import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.StringSetting;
+import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
+import meteordevelopment.starscript.Script;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,11 +25,12 @@ public class Privacy extends BetterModule {
     );
 
     public final Setting<String> ipReplacement = sgGeneral.add(new StringSetting.Builder()
-        .name("replacement")
+        .name("IP replacement")
         .description("The string the IPs will be replaced to.")
         .defaultValue("<IPv4 address>")
         .visible(hideIPs::get)
         .wide()
+        .renderer(StarscriptTextBoxRenderer.class)
         .build()
     );
 
@@ -36,11 +42,12 @@ public class Privacy extends BetterModule {
     );
 
     public final Setting<String> motdReplacement = sgGeneral.add(new StringSetting.Builder()
-        .name("replacement")
+        .name("MOTD Replacement")
         .description("The string the MOTDs will be replaced to.")
         .defaultValue("<MOTD>")
         .visible(hideMOTDs::get)
         .wide()
+        .renderer(StarscriptTextBoxRenderer.class)
         .build()
     );
 
@@ -63,12 +70,25 @@ public class Privacy extends BetterModule {
         if (!(s.indexOf('0') != -1 || s.indexOf('1') != -1 || s.indexOf('2') != -1)) return s;
 
         Matcher matcher = IPv4Pattern.matcher(s);
-        return matcher.replaceAll(ipReplacement.get());
+        return matcher.replaceAll(getIpReplacement());
     }
 
     public Text transformMOTD(Text original, boolean isOnline) {
         if (!isActive() || !hideMOTDs.get()) return original;
         if (!isOnline) return original;
-        return Text.of(motdReplacement.get());
+        return Text.of(getMOTDReplacement());
+    }
+
+    @Nullable
+    private String getIpReplacement() {
+        Script compiledTitle = MiscUtils.compileSilently(ipReplacement.get());
+        if (compiledTitle == null) return "<IP replacement is malformed!>";
+        return MeteorStarscript.run(compiledTitle);
+    }
+
+    private String getMOTDReplacement() {
+        Script compiledTitle = MiscUtils.compileSilently(motdReplacement.get());
+        if (compiledTitle == null) return "<MOTD replacement is malformed!>";
+        return MeteorStarscript.run(compiledTitle);
     }
 }
