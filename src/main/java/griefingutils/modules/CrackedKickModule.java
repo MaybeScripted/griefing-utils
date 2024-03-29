@@ -110,6 +110,10 @@ public class CrackedKickModule extends BetterModule {
             });
 
             connection.send(new LoginHelloC2SPacket(profile.getName(), profile.getId()));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ignored) {
+            }
             connection.channel.close().syncUninterruptibly();
             processingPlayers.remove(profile);
         });
