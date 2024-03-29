@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.ListMode;
+import griefingutils.utils.WhitelistEnum;
 import meteordevelopment.meteorclient.events.packets.InventoryEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -85,11 +85,11 @@ public class ContainerAction extends BetterModule {
         .build()
     );
 
-    private final Setting<ListMode> throwFilterType = sgThrow.add(new EnumSetting.Builder<ListMode>()
+    private final Setting<WhitelistEnum> throwFilterType = sgThrow.add(new EnumSetting.Builder<WhitelistEnum>()
         .name("filter-type")
         .description("The type of the filter.")
-        .defaultValue(ListMode.Blacklist)
-        .visible(throwItems::get)
+        .defaultValue(WhitelistEnum.Blacklist)
+        .visible(throwItemFilter::isVisible)
         .build()
     );
 
@@ -103,7 +103,7 @@ public class ContainerAction extends BetterModule {
     private final Setting<List<Item>> searchFilter = sgSearch.add(new ItemListSetting.Builder()
         .name("filter-items")
         .description("The items to filter.")
-        .defaultValue(List.of(
+        .defaultValue(
             Items.LAVA_BUCKET,
             Items.WATER_BUCKET,
             Items.BUCKET,
@@ -114,7 +114,7 @@ public class ContainerAction extends BetterModule {
             Items.FLINT,
             Items.IRON_INGOT,
             Items.FIRE_CHARGE
-        ))
+        )
         .visible(search::get)
         .onChanged((value) -> invalidateContainers())
         .build()
@@ -335,14 +335,9 @@ public class ContainerAction extends BetterModule {
             if (!handler.getSlot(i).hasStack()) continue;
             ItemStack stack = handler.getSlot(i).getStack();
 
-            if (throwItems.get()) {
-                if (throwFilter.get()) {
-                    boolean contains = throwItemFilter.get().contains(stack.getItem());
-                    if ((throwFilterType.get() == ListMode.Blacklist && !contains) ||
-                        throwFilterType.get() == ListMode.Whitelist && contains) {
-                    }
-                } else mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
-            }
+            if (throwItems.get())
+                if (!throwFilter.get() || throwFilterType.get().isWhitelisted(throwItemFilter.get(), stack.getItem()))
+                    mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
 
             if (search.get()) {
                 if (!searchFilter.get().contains(stack.getItem())) continue;
