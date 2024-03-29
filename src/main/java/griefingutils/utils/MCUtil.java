@@ -3,6 +3,7 @@ package griefingutils.utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.toast.Toast;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
@@ -14,6 +15,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public interface MCUtil {
     MinecraftClient MC = MinecraftClient.getInstance();
@@ -91,5 +93,10 @@ public interface MCUtil {
             blockPos,
             false
         );
+    }
+
+    default void addToastWithLimit(Supplier<Toast> getter) {
+        if (MC.getToastManager().toastQueue.size() >= 5) return;
+        MC.getToastManager().add(getter.get());
     }
 }
