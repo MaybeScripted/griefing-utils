@@ -3,7 +3,7 @@
   "id": "griefingutils",
   "version": "1.0.0",
   "name": "0x06's Griefing Utils",
-  "description": "An addon for Meteor Client, that makes griefing faster and easier than ever before.",
+  "description": "An addon that makes griefing faster and easier than ever before.",
   "authors": ["0x06", "DuckGuy"],
   "contact": {
     "homepage": "https://github.com/0x000006/griefing-utils",

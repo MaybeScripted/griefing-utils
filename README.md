@@ -1,5 +1,5 @@
 ## 0x06's Griefing Utils
-0x06's Griefing Utils is an addon for Meteor Client, that makes griefing faster and easier than ever before.
+0x06's Griefing Utils is an addon for Meteor Client that makes griefing faster and easier than ever before.
 
 Everything is original, no part is skidded. (except for things from old projects of mine)
 
