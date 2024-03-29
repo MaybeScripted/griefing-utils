@@ -48,9 +48,9 @@ public class AntiBlockEntityLag extends BetterModule {
 
         if (PlayerUtils.squaredDistanceTo(be.getPos()) < radius.get() * radius.get()) return;
 
-        if (blocks.get().contains(be.getCachedState().getBlock())) {
+        if (throwFilterType.get() == ListMode.Blacklist && blocks.get().contains(be.getCachedState().getBlock()) ||
+            throwFilterType.get() == ListMode.Whitelist && !blocks.get().contains(be.getCachedState().getBlock()))
             event.cancel();
-        }
     }
 
     private static boolean isBlockEntity(Block block) {
