@@ -28,6 +28,7 @@ public class WitherAdvertise extends BetterModule {
     private final Setting<String> name = sgGeneral.add(new StringSetting.Builder()
         .name("name")
         .description("Their names.")
+        .defaultValue("")
         .wide()
         .renderer(StarscriptTextBoxRenderer.class)
         .build()
