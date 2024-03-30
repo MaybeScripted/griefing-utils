@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.WhitelistEnum;
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.render.RenderItemEntityEvent;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.ItemListSetting;
@@ -20,10 +20,10 @@ public class AntiItemLag extends BetterModule {
         .build()
     );
 
-    public final Setting<WhitelistEnum> filterType = sgGeneral.add(new EnumSetting.Builder<WhitelistEnum>()
+    public final Setting<ListMode> filterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
         .name("filter-type")
         .description("The type of the filter.")
-        .defaultValue(WhitelistEnum.Blacklist)
+        .defaultValue(ListMode.Blacklist)
         .build()
     );
 
@@ -34,7 +34,7 @@ public class AntiItemLag extends BetterModule {
     @EventHandler
     public void onRender(RenderItemEntityEvent event) {
         Item item = event.itemEntity.getStack().getItem();
-        if (filterType.get().isBlacklisted(items.get(), item))
+        if (!filterType.get().contains(items.get(), item))
             event.cancel();
     }
 }

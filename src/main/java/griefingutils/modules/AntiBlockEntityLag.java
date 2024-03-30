@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.WhitelistEnum;
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.render.RenderBlockEntityEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.player.PlayerUtils;
@@ -31,10 +31,10 @@ public class AntiBlockEntityLag extends BetterModule {
         .build()
     );
 
-    private final Setting<WhitelistEnum> throwFilterType = sgGeneral.add(new EnumSetting.Builder<WhitelistEnum>()
+    private final Setting<ListMode> throwFilterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
         .name("filter-type")
         .description("The type of the filter.")
-        .defaultValue(WhitelistEnum.Blacklist)
+        .defaultValue(ListMode.Blacklist)
         .build()
     );
 
@@ -48,7 +48,7 @@ public class AntiBlockEntityLag extends BetterModule {
 
         if (PlayerUtils.squaredDistanceTo(be.getPos()) < radius.get() * radius.get()) return;
 
-        if (throwFilterType.get().isBlacklisted(blocks.get(), be.getCachedState().getBlock()))
+        if (!throwFilterType.get().contains(blocks.get(), be.getCachedState().getBlock()))
             event.cancel();
     }
 

@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.WhitelistEnum;
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.packets.InventoryEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -85,10 +85,10 @@ public class ContainerAction extends BetterModule {
         .build()
     );
 
-    private final Setting<WhitelistEnum> throwFilterType = sgThrow.add(new EnumSetting.Builder<WhitelistEnum>()
+    private final Setting<ListMode> throwFilterType = sgThrow.add(new EnumSetting.Builder<ListMode>()
         .name("filter-type")
         .description("The type of the filter.")
-        .defaultValue(WhitelistEnum.Blacklist)
+        .defaultValue(ListMode.Blacklist)
         .visible(throwItemFilter::isVisible)
         .build()
     );
@@ -336,7 +336,7 @@ public class ContainerAction extends BetterModule {
             ItemStack stack = handler.getSlot(i).getStack();
 
             if (throwItems.get())
-                if (!throwFilter.get() || throwFilterType.get().isWhitelisted(throwItemFilter.get(), stack.getItem()))
+                if (!throwFilter.get() || throwFilterType.get().contains(throwItemFilter.get(), stack.getItem()))
                     mc.interactionManager.clickSlot(handler.syncId, i, 1, SlotActionType.THROW, mc.player);
 
             if (search.get()) {

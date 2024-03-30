@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.WhitelistEnum;
+import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -34,10 +34,10 @@ public class AutoLavacast extends BetterModule {
         .build()
     );
 
-    private final Setting<WhitelistEnum> blocksFilterType = sgGeneral.add(new EnumSetting.Builder<WhitelistEnum>()
+    private final Setting<ListMode> blocksFilterType = sgGeneral.add(new EnumSetting.Builder<ListMode>()
         .name("blocks-filter")
         .description("The type of the filter.")
-        .defaultValue(WhitelistEnum.Blacklist)
+        .defaultValue(ListMode.Blacklist)
         .build()
     );
 
@@ -222,7 +222,7 @@ public class AutoLavacast extends BetterModule {
 
         Block block = ((BlockItem) itemStack.getItem()).getBlock();
 
-        if (blocksFilterType.get().isBlacklisted(blocksFilter.get(), block)) return false;
+        if (!blocksFilterType.get().contains(blocksFilter.get(), block)) return false;
 
         if (!Block.isShapeFullCube(block.getDefaultState().getCollisionShape(mc.world, pos))) return false;
         return !(block instanceof FallingBlock) || !FallingBlock.canFallThrough(mc.world.getBlockState(pos));
