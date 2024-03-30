@@ -23,7 +23,7 @@ public abstract class ItemEntityMixin extends Entity {
     private void onItemTick(CallbackInfo ci) {
         AntiItemLag module = Modules.get().get(AntiItemLag.class);
         if (!module.isActive() || !getWorld().isClient) return;
-        if (module.filterType.get().isBlacklisted(module.items.get(), getStack().getItem()))
+        if (!module.filterType.get().contains(module.items.get(), getStack().getItem()))
             ci.cancel();
     }
 }
