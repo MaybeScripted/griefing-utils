@@ -2,10 +2,14 @@ package griefingutils.modules;
 
 import griefingutils.utils.ListMode;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
+import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
+import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.misc.Keybind;
+import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
@@ -19,10 +23,10 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.*;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class AutoLavacast extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -97,6 +101,21 @@ public class AutoLavacast extends BetterModule {
         .build()
     );
 
+    public final Setting<InputType> inputType = sgGeneral.add(new EnumSetting.Builder<InputType>()
+        .name("input-type")
+        .description("The type of the input for placing blocks.")
+        .defaultValue(InputType.RightClick)
+        .build()
+    );
+
+    private final Setting<Keybind> keybind = sgGeneral.add(new KeybindSetting.Builder()
+        .name("keybind")
+        .description("The keybind to place blocks.")
+        .defaultValue(Keybind.fromKey(GLFW.GLFW_KEY_SPACE))
+        .visible(() -> inputType.get() == InputType.KeyBind)
+        .build()
+    );
+
     private final Setting<Boolean> render = sgRender.add(new BoolSetting.Builder()
         .name("render")
         .description("Whether to render things.")
@@ -144,13 +163,14 @@ public class AutoLavacast extends BetterModule {
         if (!Utils.canUpdate() || !enablePlace.get()) return;
 
         ((IVec3d)mc.player.getVelocity()).set(0, 0, 0);
+
         BlockPos pos = mc.player.getBlockPos().down();
         place(pos);
         if (enablePlaceTeleport.get()) mc.player.setPosition(pos.toCenterPos().offset(Direction.UP, 0.5));
     }
 
     @EventHandler
-    private void onMove(PlayerMoveEvent event) {
+    private void postTick(TickEvent.Post event) {
         if (!Utils.canUpdate()) return;
         boolean goingDown = mc.player.getPitch() > 30;
         List<BlockPos> blockPoses = getBlockPoses(fastMode.get() ? blocksPerTick.get() : 1, goingDown);
@@ -158,9 +178,7 @@ public class AutoLavacast extends BetterModule {
         for (BlockPos pos: blockPoses)
             renderPos(pos, 1, false);
 
-        if (!mc.player.input.jumping) return;
-
-        ((IVec3d)mc.player.getVelocity()).set(0, 0, 0);
+        if (!inputting()) return;
 
         if (!fastMode.get() && mc.world.getTime() % ticksPerBlock.get() != 0) return;
 
@@ -170,6 +188,26 @@ public class AutoLavacast extends BetterModule {
             place(pos);
             if (!move(pos, goingDown)) break;
         }
+    }
+
+    @EventHandler
+    private void onMove(PlayerMoveEvent event) {
+        if (!Utils.canUpdate() || !inputting()) return;
+        ((IVec3d) mc.player.getVelocity()).set(0, 0, 0);
+    }
+
+    private boolean isRightClickPressed = false;
+    public boolean inputting() {
+        if (inputType.get() == InputType.KeyBind)
+            return keybind.get().isPressed() && mc.currentScreen == null;
+        else
+            return isRightClickPressed && mc.currentScreen == null;
+    }
+
+    @EventHandler
+    private void onMouseButton(MouseButtonEvent event) {
+        if (event.button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+            isRightClickPressed = event.action == KeyAction.Press;
     }
 
     private List<BlockPos> getBlockPoses(int amount, boolean goingDown) {
@@ -230,5 +268,10 @@ public class AutoLavacast extends BetterModule {
 
     private void renderPos(BlockPos pos, int duration, boolean fade) {
         RenderUtils.renderTickingBlock(pos.toImmutable(), sideColor.get(), lineColor.get(), shapeMode.get(), 0, duration, fade, false);
+    }
+
+    public enum InputType {
+        KeyBind,
+        RightClick
     }
 }

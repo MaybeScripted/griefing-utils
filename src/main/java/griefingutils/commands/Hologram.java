@@ -68,6 +68,7 @@ public class Hologram extends BetterCommand {
             } else imagePath = lastImagePath;
 
             try {
+                Vec3d playerPos = mc.player.getPos();
                 info("Selected: " + imagePath);
                 File file = new File(imagePath);
                 BufferedImage image = ImageIO.read(file);
@@ -100,7 +101,7 @@ public class Hologram extends BetterCommand {
                     }
                     appendToBuilder(JSON, lastColor, tmp, false);
 
-                    Vec3d pos = mc.player.getPos().offset(Direction.UP, (height - y) * 0.23);
+                    Vec3d pos = playerPos.offset(Direction.UP, (height - y) * 0.23);
                     NbtCompound nbt = EggNbtGenerator.ARMOR_STAND.asEggNbt(pos, NbtString.of(JSON + "]"));
                     ItemStack hologram = new ItemStack(Items.COD_SPAWN_EGG);
                     hologram.setNbt(nbt);
