@@ -21,6 +21,7 @@ Every text field in the module config menu supports Starscript.
 - `Sign Changer` Changes the text of nearby signs.
 - `Vanilla Flight` Flight with smart packet-based anti-kick.
 - `Wither Advertise` Spawns withers nearby with a name.
+- `World Delter` Deletes loaded chunks around you but needs some time to finish. (requires OP)
 
 ### Commands
 - `cc-crash` Command Complete Crash. Crashes servers using a stack overflow.

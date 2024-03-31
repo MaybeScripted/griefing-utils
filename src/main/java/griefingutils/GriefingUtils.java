@@ -7,6 +7,7 @@ import griefingutils.modules.*;
 import griefingutils.modules.creative.DoomBoom;
 import griefingutils.modules.creative.ExplosiveHands;
 import griefingutils.modules.op.SidebarAdvertise;
+import griefingutils.modules.op.WorldDeleter;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.systems.hud.Hud;
@@ -42,6 +43,7 @@ public class GriefingUtils extends MeteorAddon {
         Modules.get().add(new SignChanger());
         Modules.get().add(new VanillaFlight());
         Modules.get().add(new WitherAdvertise());
+        Modules.get().add(new WorldDeleter());
     }
 
     private static void registerCommands() {

@@ -22,7 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import org.jetbrains.annotations.Nullable;
 
-public class DoomBoom extends BetterModule{
+public class DoomBoom extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<ExplosiveEntity> entity = sgGeneral.add(new EnumSetting.Builder<ExplosiveEntity>()
