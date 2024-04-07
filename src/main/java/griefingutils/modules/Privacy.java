@@ -18,37 +18,37 @@ public class Privacy extends BetterModule {
     public SettingGroup sgGeneral = settings.getDefaultGroup();
 
     public final Setting<Boolean> hideIPs = sgGeneral.add(new BoolSetting.Builder()
-            .name("Hide IPs")
-            .description("Tries to hide IPv4 Addresses and ports")
-            .defaultValue(false)
-            .build()
+        .name("Hide IPs")
+        .description("Tries to hide IPv4 Addresses and ports")
+        .defaultValue(false)
+        .build()
     );
 
     public final Setting<String> ipReplacement = sgGeneral.add(new StringSetting.Builder()
-            .name("IP replacement")
-            .description("The string the IPs and ports will be replaced to.")
-            .defaultValue("<IPv4 address>")
-            .visible(hideIPs::get)
-            .wide()
-            .renderer(StarscriptTextBoxRenderer.class)
-            .build()
+        .name("IP replacement")
+        .description("The string the IPs and ports will be replaced to.")
+        .defaultValue("<IPv4 address>")
+        .visible(hideIPs::get)
+        .wide()
+        .renderer(StarscriptTextBoxRenderer.class)
+        .build()
     );
 
     public final Setting<Boolean> hideMOTDs = sgGeneral.add(new BoolSetting.Builder()
-            .name("Hide MOTDs")
-            .description("Hides the message of the day from servers.")
-            .defaultValue(false)
-            .build()
+        .name("Hide MOTDs")
+        .description("Hides the message of the day from servers.")
+        .defaultValue(false)
+        .build()
     );
 
     public final Setting<String> motdReplacement = sgGeneral.add(new StringSetting.Builder()
-            .name("MOTD Replacement")
-            .description("The string the MOTDs will be replaced to.")
-            .defaultValue("<MOTD>")
-            .visible(hideMOTDs::get)
-            .wide()
-            .renderer(StarscriptTextBoxRenderer.class)
-            .build()
+        .name("MOTD Replacement")
+        .description("The string the MOTDs will be replaced to.")
+        .defaultValue("<MOTD>")
+        .visible(hideMOTDs::get)
+        .wide()
+        .renderer(StarscriptTextBoxRenderer.class)
+        .build()
     );
 
     public Privacy() {
@@ -62,7 +62,7 @@ public class Privacy extends BetterModule {
     }
 
     // Modified version of first comment from https://stackoverflow.com/q/31178400
-    private final Pattern IPv4Pattern = Pattern.compile("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(2[0-4][0-9]|25[0-5]|1[0-9]{2}|[1-9][0-9]|[0-9]):([0-9]{1,5})");
+    private final Pattern IPv4Pattern = Pattern.compile("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(2[0-4][0-9]|25[0-5]|1[0-9]{2}|[1-9][0-9]|[0-9])|:([0-9]{1,5})");
     public String censorIPs(String s) {
         // Fast checks that are faster than a RegEx
         if (s.length() < 7) return s;
