@@ -19,14 +19,14 @@ public class Privacy extends BetterModule {
 
     public final Setting<Boolean> hideIPs = sgGeneral.add(new BoolSetting.Builder()
         .name("Hide IPs")
-        .description("Tries to hide IPv4 Addresses")
+        .description("Tries to hide IPv4 Addresses and ports")
         .defaultValue(false)
         .build()
     );
 
     public final Setting<String> ipReplacement = sgGeneral.add(new StringSetting.Builder()
         .name("IP replacement")
-        .description("The string the IPs will be replaced to.")
+        .description("The string the IPs and ports will be replaced to.")
         .defaultValue("<IPv4 address>")
         .visible(hideIPs::get)
         .wide()
@@ -62,7 +62,7 @@ public class Privacy extends BetterModule {
     }
 
     // Modified version of first comment from https://stackoverflow.com/q/31178400
-    private final Pattern IPv4Pattern = Pattern.compile("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(2[0-4][0-9]|25[0-5]|1[0-9]{2}|[1-9][0-9]|[0-9])");
+    private final Pattern IPv4Pattern = Pattern.compile("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(2[0-4][0-9]|25[0-5]|1[0-9]{2}|[1-9][0-9]|[0-9])|:([0-9]{1,5})");
     public String censorIPs(String s) {
         // Fast checks that are faster than a RegEx
         if (s.length() < 7) return s;
