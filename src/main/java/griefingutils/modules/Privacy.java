@@ -67,14 +67,14 @@ public class Privacy extends BetterModule {
         // Fast checks that are faster than a RegEx
         if (s.length() < 7) return s;
         if (s.indexOf('.') == -1) return s;
-        if (!(s.indexOf('0')!= -1 || s.indexOf('1')!= -1 || s.indexOf('2')!= -1)) return s;
+        if (!(s.indexOf('0') != -1 || s.indexOf('1') != -1 || s.indexOf('2') != -1)) return s;
 
         Matcher matcher = IPv4Pattern.matcher(s);
         return matcher.replaceAll(getIpReplacement());
     }
 
     public Text transformMOTD(Text original, boolean isOnline) {
-        if (!isActive() ||!hideMOTDs.get()) return original;
+        if (!isActive() || !hideMOTDs.get()) return original;
         if (!isOnline) return original;
         return Text.of(getMOTDReplacement());
     }
