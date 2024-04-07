@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "griefingutils",
-  "version": "1.0.3",
+  "version": "${version}",
   "name": "0x06's Griefing Utils",
   "description": "An addon that makes griefing faster and easier than ever before.",
   "authors": ["0x06", "DuckGuy"],
