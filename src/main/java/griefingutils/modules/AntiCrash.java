@@ -7,9 +7,20 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityStatuses;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.GuardianEntity;
+import net.minecraft.entity.passive.SnifferEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.*;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
+
+import static net.minecraft.network.packet.s2c.play.EntityAnimationS2CPacket.*;
 
 public class AntiCrash extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -47,25 +58,38 @@ public class AntiCrash extends BetterModule {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST + 1)
-    private void onPacketReceive(PacketEvent.Receive event) {
-        if (event.packet instanceof ExplosionS2CPacket packet && isInvalid(packet)) {
-            cancel(event, "invalid explosion");
-        } else if (event.packet instanceof ParticleS2CPacket packet && isInvalid(packet)) {
-            cancel(event, "invalid particles");
-        } else if (event.packet instanceof PlayerPositionLookS2CPacket packet && isInvalid(packet)) {
-            cancel(event, "invalid movement");
-        } else if (event.packet instanceof EntityVelocityUpdateS2CPacket packet && isInvalid(packet)) {
-            cancel(event, "invalid velocity update");
-        } else if (event.packet instanceof InventoryS2CPacket packet && isInvalid(packet)) {
-            cancel(event, "invalid inventory");
-        } else if (event.packet instanceof ScreenHandlerSlotUpdateS2CPacket packet && isInvalid(packet)) {
-            cancel(event, "invalid slot update");
-        } else if (event.packet instanceof GameStateChangeS2CPacket packet && cancelDemoScreen.get() && isInvalid(packet)) {
-            cancel(event, "demo packet");
+    private void onPacketReceive(PacketEvent.Receive e) {
+        // TODO: pattern matching for switch when 1.20.5 comes out with Java 21
+        if (e.packet instanceof ExplosionS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid explosion");
+        } else if (e.packet instanceof ParticleS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid particles");
+        } else if (e.packet instanceof PlayerPositionLookS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid movement");
+        } else if (e.packet instanceof EntityVelocityUpdateS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid velocity update");
+        } else if (e.packet instanceof InventoryS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid inventory");
+        } else if (e.packet instanceof ScreenHandlerSlotUpdateS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid slot update");
+        } else if (e.packet instanceof WorldBorderInitializeS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid world border");
+        } else if (e.packet instanceof WorldBorderInterpolateSizeS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid world border");
+        } else if (e.packet instanceof WorldBorderSizeChangedS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid world border");
+        } else if (e.packet instanceof EntityStatusS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid entity status");
+        } else if (e.packet instanceof EntityDamageS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid damage");
+        } else if (e.packet instanceof EntityAnimationS2CPacket p && isInvalid(p)) {
+            cancel(e, "invalid animation");
+        } else if (e.packet instanceof GameStateChangeS2CPacket p && cancelDemoScreen.get() && isInvalid(p)) {
+            cancel(e, "demo packet");
         }
     }
 
-    private boolean isInvalid(ExplosionS2CPacket p) {
+    private static boolean isInvalid(ExplosionS2CPacket p) {
         return p.getX() > 30_000_000 ||
             p.getY() > 30_000_000 ||
             p.getZ() > 30_000_000 ||
@@ -73,21 +97,21 @@ public class AntiCrash extends BetterModule {
             p.getY() < -30_000_000 ||
             p.getZ() < -30_000_000 ||
             p.getRadius() > 1000 ||
-            p.getAffectedBlocks().size() > 100_000 ||
-            p.getPlayerVelocityX() > 30_000_000 ||
-            p.getPlayerVelocityY() > 30_000_000 ||
-            p.getPlayerVelocityZ() > 30_000_000 ||
-            p.getPlayerVelocityX() < -30_000_000 ||
-            p.getPlayerVelocityY() < -30_000_000 ||
-            p.getPlayerVelocityZ() < -30_000_000;
+            p.getAffectedBlocks().size() > 1_000_000 ||
+            p.getPlayerVelocityX() > 100_000 ||
+            p.getPlayerVelocityY() > 100_000 ||
+            p.getPlayerVelocityZ() > 100_000 ||
+            p.getPlayerVelocityX() < -100_000 ||
+            p.getPlayerVelocityY() < -100_000 ||
+            p.getPlayerVelocityZ() < -100_000;
     }
 
-    private boolean isInvalid(ParticleS2CPacket p) {
+    private static boolean isInvalid(ParticleS2CPacket p) {
         return p.getCount() > 100_000 ||
             p.getSpeed() > 100_000;
     }
 
-    private boolean isInvalid(PlayerPositionLookS2CPacket p) {
+    private static boolean isInvalid(PlayerPositionLookS2CPacket p) {
         return p.getX() > 30_000_000 ||
             p.getY() > 30_000_000 ||
             p.getZ() > 30_000_000 ||
@@ -96,7 +120,7 @@ public class AntiCrash extends BetterModule {
             p.getZ() < -30_000_000;
     }
 
-    private boolean isInvalid(EntityVelocityUpdateS2CPacket p) {
+    private static boolean isInvalid(EntityVelocityUpdateS2CPacket p) {
         return p.getVelocityX() > 30_000_000 ||
             p.getVelocityY() > 30_000_000 ||
             p.getVelocityZ() > 30_000_000 ||
@@ -123,11 +147,67 @@ public class AntiCrash extends BetterModule {
                 packet.getSlot() > mc.player.currentScreenHandler.slots.size() + mc.player.playerScreenHandler.slots.size();
     }
 
-    private boolean isInvalid(GameStateChangeS2CPacket packet) {
+    private static boolean isInvalid(GameStateChangeS2CPacket packet) {
         return packet.getReason() == GameStateChangeS2CPacket.DEMO_MESSAGE_SHOWN;
     }
 
+    private static boolean isInvalid(WorldBorderInitializeS2CPacket packet) {
+        return sizeLerpTargetInvalid(packet.getSizeLerpTarget());
+    }
+
+    private static boolean isInvalid(WorldBorderInterpolateSizeS2CPacket packet) {
+        return sizeLerpTargetInvalid(packet.getSizeLerpTarget());
+    }
+
+    private static boolean isInvalid(WorldBorderSizeChangedS2CPacket packet) {
+        return sizeLerpTargetInvalid(packet.getSizeLerpTarget());
+    }
+
+    private boolean isInvalid(ItemPickupAnimationS2CPacket packet) {
+        return !(mc.world.getEntityById(packet.getCollectorEntityId()) instanceof LivingEntity);
+    }
+
+    private static boolean sizeLerpTargetInvalid(double value) {
+        return value < 0 || value > 60_000_000;
+    }
+
+    public static boolean isInvalid(BundleS2CPacket packet) {
+        for (Packet<ClientPlayPacketListener> p : packet.getPackets()) {
+            if (!(p instanceof BundleS2CPacket)) continue;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isInvalid(EntityStatusS2CPacket packet) {
+        if (packet.getStatus() == EntityStatuses.PLAY_GUARDIAN_ATTACK_SOUND &&
+            !(packet.getEntity(mc.world) instanceof GuardianEntity)) return true;
+
+        if (packet.getStatus() == EntityStatuses.START_DIGGING &&
+            !(packet.getEntity(mc.world) instanceof SnifferEntity)) return true;
+
+        return false;
+    }
+
+    private boolean isInvalid(EntityDamageS2CPacket packet) {
+        return mc.world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).getEntry(packet.sourceTypeId()).isEmpty();
+    }
+
+    private boolean isInvalid(EntityAnimationS2CPacket packet) {
+        Entity entity = mc.world.getEntityById(packet.getId());
+        return switch (packet.getAnimationId()) {
+            case SWING_MAIN_HAND, SWING_OFF_HAND -> !(entity instanceof LivingEntity);
+            case WAKE_UP -> !(entity instanceof PlayerEntity);
+            default -> false;
+        };
+    }
+
     private void cancel(PacketEvent.Receive event, String reason) {
+        alert(reason);
+        event.cancel();
+    }
+
+    public void alert(String reason) {
         if (message.get()) info("Received a bad packet: " + reason);
         if (notification.get()) addToastWithLimit(() -> new NotificationToast(
             Text.of("Anti Crash"),
@@ -136,6 +216,5 @@ public class AntiCrash extends BetterModule {
             Items.BARRIER,
             notificationImportant.get()
         ));
-        event.cancel();
     }
 }

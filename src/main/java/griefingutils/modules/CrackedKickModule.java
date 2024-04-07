@@ -24,6 +24,9 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CrackedKickModule extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -83,7 +86,13 @@ public class CrackedKickModule extends BetterModule {
         ClientConnection connection = new ClientConnection(NetworkSide.CLIENTBOUND);
 
         CompletableFuture.runAsync(() -> {
-            ClientConnection.connect(address, mc.options.shouldUseNativeTransport(), connection).syncUninterruptibly();
+            try {
+                ClientConnection.connect(address, mc.options.shouldUseNativeTransport(), connection).get(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | TimeoutException | ExecutionException ignored) {
+                processingPlayers.remove(profile);
+                connection.channel.close().awaitUninterruptibly();
+                return;
+            }
             connection.connect(address.getHostName(), address.getPort(), new ClientLoginPacketListener() {
                 @Override
                 public void onHello(LoginHelloS2CPacket packet) {}
@@ -110,12 +119,13 @@ public class CrackedKickModule extends BetterModule {
             });
 
             connection.send(new LoginHelloC2SPacket(profile.getName(), profile.getId()));
+            processingPlayers.remove(profile);
+            // Server does not read packets when the connection is closed
             try {
-                Thread.sleep(2000);
+                Thread.sleep(5000);
             } catch (InterruptedException ignored) {
             }
             connection.channel.close().syncUninterruptibly();
-            processingPlayers.remove(profile);
         });
     }
 }

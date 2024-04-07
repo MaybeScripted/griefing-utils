@@ -3,12 +3,13 @@
   "package": "griefingutils.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ClientConnectionMixin",
+    "GameMenuScreenMixin",
     "ItemEntityMixin",
     "MinecraftClientMixin",
     "MultiplayerServerListWidget$ServerEntryMixin",
-    "PlayerEntityMixin",
-    "GameMenuScreenMixin",
-    "NameProtectMixin"
+    "NameProtectMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
