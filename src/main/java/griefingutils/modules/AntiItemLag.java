@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.ListMode;
+import griefingutils.util.ListMode;
 import meteordevelopment.meteorclient.events.render.RenderItemEntityEvent;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.ItemListSetting;

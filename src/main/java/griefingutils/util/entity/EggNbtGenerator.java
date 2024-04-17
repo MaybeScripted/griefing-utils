@@ -1,4 +1,4 @@
-package griefingutils.utils.entity;
+package griefingutils.util.entity;
 
 import net.minecraft.nbt.*;
 import net.minecraft.util.math.Vec3d;

@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.ListMode;
+import griefingutils.util.ListMode;
 import meteordevelopment.meteorclient.events.packets.InventoryEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;

@@ -1,7 +1,8 @@
 package griefingutils.screen;
 
 import griefingutils.GriefingUtils;
-import meteordevelopment.meteorclient.gui.screens.accounts.AccountsScreen;
+import griefingutils.modules.PauseScreenPlus;
+import griefingutils.util.TextConstants;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -9,21 +10,14 @@ import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.option.ServerList;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
-import java.util.Iterator;
-
 public class GameMenuExtrasScreen extends Screen {
-    private static final Text GAME_TEXT = Text.translatable("menu.game");
-    private static final Text COPY_IP_TEXT = Text.of("Copy IP");
-    private static final Text LEAVE_AND_DELETE_TEXT = Text.of("Disconnect & Delete");
-    private static final Text ACCOUNTS_TEXT = Text.of("Accounts");
     public final GameMenuScreen parent;
 
     public GameMenuExtrasScreen(GameMenuScreen parent) {
-        super(GAME_TEXT);
+        super(TextConstants.GAME_MENU);
         this.parent = parent;
     }
 
@@ -33,34 +27,13 @@ public class GameMenuExtrasScreen extends Screen {
         gW.getMainPositioner().margin(4, 4, 4, 0);
         GridWidget.Adder adder = gW.createAdder(2);
 
-        addWideButton(adder, ScreenTexts.BACK, button -> {
-            client.setScreen(parent);
-        }, gW, true);
-
-        addButton(adder, COPY_IP_TEXT, button -> {
-            client.keyboard.setClipboard(client.getCurrentServerEntry().address);
-        });
-
-        addButton(adder, ACCOUNTS_TEXT, button -> {
-            client.setScreen(new AccountsConfirmReconnectScreen(this));
-        });
-
-        addWideButton(adder, LEAVE_AND_DELETE_TEXT, button -> {
-            String currentServerAddress = client.getCurrentServerEntry().address;
-            ServerList serverList = new ServerList(client);
-            serverList.loadFile();
-
-            Iterator<ServerInfo> iterator = serverList.servers.iterator();
-            while (iterator.hasNext()) {
-                ServerInfo server = iterator.next();
-                if (server.address.equals(currentServerAddress))
-                    iterator.remove();
-            }
-
-            serverList.saveFile();
+        addWideButton(adder, ScreenTexts.BACK, button -> client.setScreen(parent), gW, true);
+        addButton(adder, TextConstants.COPY_IP, button -> client.keyboard.setClipboard(client.getCurrentServerEntry().address));
+        addButton(adder, TextConstants.ACCOUNTS, button -> client.setScreen(new AccountsConfirmReconnectScreen(this)));
+        addWideButton(adder, TextConstants.DISCONNECT_AND_DELETE, button -> {
+            PauseScreenPlus.deleteCurrentServer();
             parent.disconnect();
         }, gW, false);
-
 
         gW.refreshPositions();
         SimplePositioningWidget.setPos(gW, 0, 0, this.width, this.height, 0.5f, 0.25f);

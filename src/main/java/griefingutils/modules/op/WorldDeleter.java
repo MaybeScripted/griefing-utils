@@ -108,7 +108,7 @@ public class WorldDeleter extends BetterModule {
     @EventHandler
     private void postTick(TickEvent.Post event) {
         if (!Utils.canUpdate() || mc.world.getTime() % delay.get() != 0) return;
-        if (!hasOp()) {
+        if (notOp()) {
             warning("You don't have OP");
             toggle();
             return;

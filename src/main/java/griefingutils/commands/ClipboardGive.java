@@ -2,7 +2,7 @@ package griefingutils.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import griefingutils.utils.CreativeUtils;
+import griefingutils.util.CreativeUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;

@@ -1,5 +1,5 @@
 ## 0x06's Griefing Utils
-0x06's Griefing Utils is an addon for Meteor Client that makes griefing faster and easier than ever before.
+An addon for Meteor Client that makes griefing faster and easier than ever before.
 
 Everything is original, no part is skidded. (except for things from old projects of mine)
 
@@ -10,16 +10,17 @@ Every text field in the module config menu supports Starscript.
 - `Anti Crash` Cancels packets that may freeze your game.
 - `Anti Item Lag` Disables the ticking and rendering of the specified items.
 - `Auto Lavacast` Lava casting made easy.
-- `Better Pause Screen` Shows "More" button instead of "Give Feedback" and makes CTRL + C copy the server IP.
 - `Container Action` Does stuff with nearby containers.
 - `Cracked Kick` Kicks everyone on a cracked server.
+- `Disconnect Screen Plus` Puts a delete button on the disconnect screen.
 - `Doom Boom` Obliterates nearby terrain. (requires creative mode)
 - `Explosive Hands` Spawns explosions at the block you're looking at. (requires creative mode)
-- `Gamemode Notifier` Alerts you when someone changes their gamemode."
+- `Gamemode Notify` Alerts you when someone changes their gamemode."
+- `Pause Screen Plus` Shows "More" button instead of "Give Feedback" and makes CTRL + C copy the server IP.
 - `Privacy` Hides sensitive information.
 - `Sidebar Advertise` Creates a scoreboard with some content (requires OP)
 - `Sign Changer` Changes the text of nearby signs.
-- `Vanilla Flight` Flight with smart packet-based anti-kick.
+- `Vanilla Flight` Flight with smart anti-rubberband & packet-based anti-kick.
 - `Wither Advertise` Spawns withers nearby with a name.
 - `World Delter` Deletes loaded chunks around you but needs some time to finish. (requires OP)
 

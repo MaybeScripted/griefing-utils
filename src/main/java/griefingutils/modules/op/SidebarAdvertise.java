@@ -2,7 +2,7 @@ package griefingutils.modules.op;
 
 import griefingutils.modules.BetterModule;
 import griefingutils.modules.Categories;
-import griefingutils.utils.MiscUtils;
+import griefingutils.util.MiscUtil;
 import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
@@ -60,7 +60,7 @@ public class SidebarAdvertise extends BetterModule {
 
     @Override
     public void onActivate() {
-        if (!hasOp()) {
+        if (notOp()) {
             warning("You don't have OP");
             toggle();
             return;
@@ -75,7 +75,7 @@ public class SidebarAdvertise extends BetterModule {
         String scoreboardID = RandomStringUtils.randomAlphanumeric(6).toLowerCase(Locale.ROOT);
         if (!sendCommandChecked(
             "scoreboard objectives add %s dummy {\"text\":\"%s\",\"color\":\"%s\"}"
-                .formatted(scoreboardID, title, MiscUtils.hexifyColor(titleColor.get())),
+                .formatted(scoreboardID, title, MiscUtil.hexifyColor(titleColor.get())),
             s -> "Title is too long! Reduce it by %d characters."
                 .formatted(s.length() - 255)
         )) return;
@@ -89,7 +89,7 @@ public class SidebarAdvertise extends BetterModule {
             sendCommand("team add %s".formatted(teamID));
             if (!sendCommandChecked(
                 "team modify %s suffix {\"text\":\" %s\",\"color\":\"%s\"}"
-                    .formatted(teamID, line, MiscUtils.hexifyColor(linesColor.get())),
+                    .formatted(teamID, line, MiscUtil.hexifyColor(linesColor.get())),
                 s -> "Content line #%d is too long! Reduce it by %d characters."
                     .formatted(lineNum, s.length() - 255)
             )) return;

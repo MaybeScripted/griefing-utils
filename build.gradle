@@ -33,7 +33,11 @@ dependencies {
 
 processResources {
     filesMatching("fabric.mod.json") {
-        expand "version": project.version, "mc_version": project.minecraft_version
+        expand "version": project.version,
+               "mc_version": project.minecraft_version,
+               "commit": (System.getenv("GITHUB_SHA") ?: "null"),
+               "repo_branch": (System.getenv("GITHUB_REF_NAME") ?: "null"),
+               "repo_id": (System.getenv("GITHUB_REPOSITORY") ?: "null")
     }
 }
 

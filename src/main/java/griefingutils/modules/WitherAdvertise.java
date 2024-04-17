@@ -1,8 +1,8 @@
 package griefingutils.modules;
 
-import griefingutils.utils.CreativeUtils;
-import griefingutils.utils.MiscUtils;
-import griefingutils.utils.entity.EggNbtGenerator;
+import griefingutils.util.CreativeUtils;
+import griefingutils.util.MiscUtil;
+import griefingutils.util.entity.EggNbtGenerator;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.utils.StarscriptTextBoxRenderer;
 import meteordevelopment.meteorclient.settings.*;
@@ -65,7 +65,7 @@ public class WitherAdvertise extends BetterModule {
 
     @EventHandler
     private void postTick(TickEvent.Post event) {
-        if (!isCreative()) {
+        if (notCreative()) {
             warning("You don't have creative");
             toggle();
             return;
@@ -76,7 +76,7 @@ public class WitherAdvertise extends BetterModule {
         for (int i = 0; i < amount.get(); i++) {
             Vec3d pos = getRandomPos();
             if (pos == null) continue;
-            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(parseName(), MiscUtils.hexifyColor(color.get()));
+            String customName = "{\"text\":\"%s\",\"color\":\"%s\"}".formatted(parseName(), MiscUtil.hexifyColor(color.get()));
             NbtCompound nbt = EggNbtGenerator.WITHER.asEggNbt(pos, NbtString.of(customName));
             CreativeUtils.giveToSelectedSlot(Items.WITHER_SPAWN_EGG, nbt, null, 1);
             mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, bhrAtEyes());

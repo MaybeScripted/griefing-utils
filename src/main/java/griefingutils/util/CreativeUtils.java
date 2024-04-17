@@ -1,4 +1,4 @@
-package griefingutils.utils;
+package griefingutils.util;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import griefingutils.GriefingUtils;

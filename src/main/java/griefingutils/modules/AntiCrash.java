@@ -195,6 +195,7 @@ public class AntiCrash extends BetterModule {
 
     private boolean isInvalid(EntityAnimationS2CPacket packet) {
         Entity entity = mc.world.getEntityById(packet.getId());
+        if (entity == null) return false; // vanilla already checks this
         return switch (packet.getAnimationId()) {
             case SWING_MAIN_HAND, SWING_OFF_HAND -> !(entity instanceof LivingEntity);
             case WAKE_UP -> !(entity instanceof PlayerEntity);

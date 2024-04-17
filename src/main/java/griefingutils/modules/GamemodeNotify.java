@@ -13,7 +13,7 @@ import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket.Action;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
 
-public class GamemodeNotifier extends BetterModule {
+public class GamemodeNotify extends BetterModule {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Boolean> message = sgGeneral.add(new BoolSetting.Builder()
@@ -37,8 +37,8 @@ public class GamemodeNotifier extends BetterModule {
         .build()
     );
 
-    public GamemodeNotifier() {
-        super(Categories.DEFAULT, "gamemode-notifier", "Alerts you when someone changes their gamemode.");
+    public GamemodeNotify() {
+        super(Categories.DEFAULT, "gamemode-notify", "Alerts you when someone changes their gamemode.");
     }
 
     @EventHandler

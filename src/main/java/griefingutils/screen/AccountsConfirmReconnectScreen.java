@@ -1,26 +1,25 @@
 package griefingutils.screen;
 
 import griefingutils.GriefingUtils;
+import griefingutils.util.TextConstants;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.text.Text;
 
 import java.net.InetSocketAddress;
 
-public class AccountsConfirmReconnectScreen extends ConfirmScreen {
-    private static final Text CONFIRM_RECONNECT_TEXT = Text.of("Confirm Reconnect");
-    private static final Text DESCRIPTION_TEXT = Text.of("Are you sure you want to reconnect with your new account?");
+public class AccountsConfirmReconnectScreen extends BetterConfirmScreen {
     private boolean openedAccountsScreen = false;
 
     public AccountsConfirmReconnectScreen(GameMenuExtrasScreen parent) {
-        super(confirmed -> {
-            if (confirmed) AccountsConfirmReconnectScreen.reconnect(parent);
-            else GriefingUtils.MC.setScreen(parent);
-        }, CONFIRM_RECONNECT_TEXT, DESCRIPTION_TEXT);
+        super(
+            parent,
+            () -> AccountsConfirmReconnectScreen.reconnect(parent),
+            TextConstants.RECONNECT_CONFIRM_TITLE,
+            TextConstants.RECONNECT_CONFIRM_DESCRIPTION
+        );
     }
 
     @Override

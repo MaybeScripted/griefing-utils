@@ -1,6 +1,6 @@
 package griefingutils.modules;
 
-import griefingutils.utils.MCUtil;
+import griefingutils.util.MCUtil;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 

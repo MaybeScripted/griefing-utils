@@ -1,6 +1,6 @@
 package griefingutils.commands;
 
-import griefingutils.utils.MCUtil;
+import griefingutils.util.MCUtil;
 import meteordevelopment.meteorclient.commands.Command;
 import net.minecraft.client.MinecraftClient;
 

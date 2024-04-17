@@ -1,4 +1,4 @@
-package griefingutils.utils.entity;
+package griefingutils.util.entity;
 
 public enum ExplosiveEntity {
     FIREBALL(EggNbtGenerator.FIREBALL, true),

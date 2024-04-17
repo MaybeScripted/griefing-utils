@@ -7,8 +7,9 @@
   "authors": ["0x06", "DuckGuy"],
   "contact": {
     "homepage": "https://github.com/0x000006/griefing-utils",
-    "sources": "https://github.com/0x000006/griefing-utils",
-    "issues": "https://github.com/0x000006/griefing-utils/issues"
+    "issues": "https://github.com/0x000006/griefing-utils/issues",
+    "repo": "https://github.com/0x000006/griefing-utils",
+    "sources": "https://github.com/0x000006/griefing-utils"
   },
   "license": "MIT-0",
   "icon": "assets/griefing_utils/icon.png",
@@ -20,6 +21,11 @@
   },
   "mixins": ["griefingutils.mixins.json"],
   "custom": {
+    "repo": {
+      "branch": "${repo_branch}",
+      "commit": "${commit}",
+      "id": "${repo_id}"
+    },
     "meteor-client:color": "255,75,0",
     "modmenu": {
       "links": {

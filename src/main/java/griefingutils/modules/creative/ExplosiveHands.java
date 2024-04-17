@@ -2,8 +2,8 @@ package griefingutils.modules.creative;
 
 import griefingutils.modules.BetterModule;
 import griefingutils.modules.Categories;
-import griefingutils.utils.CreativeUtils;
-import griefingutils.utils.entity.ExplosiveEntity;
+import griefingutils.util.CreativeUtils;
+import griefingutils.util.entity.ExplosiveEntity;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -45,7 +45,7 @@ public class ExplosiveHands extends BetterModule {
 
     @EventHandler
     private void postTick(TickEvent.Post event) {
-        if (!isCreative()) {
+        if (notCreative()) {
             warning("You're not in creative mode!");
             toggle();
             return;

@@ -1,4 +1,4 @@
-package griefingutils.utils;
+package griefingutils.util;
 
 import java.util.Collection;
 
