@@ -76,7 +76,7 @@ public class GriefingUtils extends MeteorAddon {
 
     static {
         String id = getRepoProperty("id");
-        if (id == null) {
+        if (id == null || id.equals("null")) {
             REPO = null;
         } else {
             String[] ownerNamePair = id.split("/");
